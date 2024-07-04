@@ -1,19 +1,21 @@
 require('dotenv').config();
 
-const Hapi = require('@hapi/hapi');
+// const Hapi = require('@hapi/hapi');
+// const routes = require('./routes/router');
 
-const routes = require('./routes/router');
+const syncDatabase = require('./db/models/models');
 
 const init = async () => {
-  const server = Hapi.server({
-    port: 3000,
-    host: 'localhost',
-  });
+  await syncDatabase();
+  
+  // const server = Hapi.server({
+  //   port: 3000,
+  //   host: 'localhost',
+  // });
+  // server.route(routes);
 
-  server.route(routes);
-
-  await server.start();
-  console.log('Server running on %s', server.info.uri);
+  // await server.start();
+  // console.log('Server running on %s', server.info.uri);
 };
 
 init();
