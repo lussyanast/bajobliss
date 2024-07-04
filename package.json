@@ -2,10 +2,11 @@
   "name": "bajobliss-back",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon ./src/index.js",
+    "start": "node ./src/main.js",
+    "start-dev": "nodemon ./src/main.js",
     "lint": "eslint ./src",
     "prettier": "npx prettier src test --check"
   },
@@ -22,6 +23,7 @@
   "dependencies": {
     "@hapi/hapi": "^21.3.9",
     "dotenv": "^16.4.5",
+    "mysql2": "^3.10.2",
     "nanoid": "^5.0.7",
     "sequelize": "^6.37.3"
   },
