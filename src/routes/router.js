@@ -1,0 +1,16 @@
+module.exports = [
+  ...require('./auth/auth.routes'),
+  ...require('./user/user.routes'),
+  ...require('./user/user_address.routes'),
+  ...require('./user/user_wishlist.routes'),
+  ...require('./user/user_cart.routes'),
+  ...require('./product/product.routes'),
+  ...require('./product/product_category.routes'),
+  ...require('./product/product_review.routes'),
+  ...require('./order/order.routes'),
+  ...require('./order/order_item.routes'),
+  ...require('./order/order_shipment.routes'),
+  ...require('./payment/payment.routes'),
+  ...require('./voucher/voucher.routes'),
+  ...require('./feedback/feedback.routes'),
+];
