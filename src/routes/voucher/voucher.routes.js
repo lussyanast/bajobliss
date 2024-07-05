@@ -1,27 +1,35 @@
+const {
+  getVoucher,
+  getVoucherById,
+  createVoucher,
+  updateVoucher,
+  deleteVoucher,
+} = require('../../handler/voucher/voucher.handler');
+
 module.exports = [
   {
     method: 'GET',
     path: '/vouchers',
-    handler: () => "null", 
+    handler: getVoucher, 
   },
   {
     method: 'GET',
     path: '/vouchers/{voucherId}',
-    handler: () => "null", 
+    handler: getVoucherById, 
   },
   {
     method: 'POST',
     path: '/vouchers',
-    handler: () => "null", 
+    handler: createVoucher, 
   },
   {
     method: 'PUT',
     path: '/vouchers/{voucherId}',
-    handler: () => "null", 
+    handler: updateVoucher, 
   },
   {
     method: 'DELETE',
     path: '/vouchers/{voucherId}',
-    handler: () => "null", 
+    handler: deleteVoucher, 
   }
 ]

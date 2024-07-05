@@ -1,27 +1,35 @@
+const {
+  getUserCart,
+  getUserCartById,
+  createUserCart,
+  updateUserCart,
+  deleteUserCart,
+} = require('../../handler/user/user_cart.handler');
+
 module.exports = [
   {
     method: 'GET',
     path: '/user-carts',
-    handler: () => "null", 
+    handler: getUserCart, 
   },
   {
     method: 'GET',
     path: '/user-carts/{cartId}',
-    handler: () => "null", 
+    handler: getUserCartById, 
   },
   {
     method: 'POST',
     path: '/user-carts',
-    handler: () => "null", 
+    handler: createUserCart, 
   },
   {
     method: 'PUT',
     path: '/user-carts/{cartId}',
-    handler: () => "null", 
+    handler: updateUserCart, 
   },
   {
     method: 'DELETE',
     path: '/user-carts/{cartId}',
-    handler: () => "null", 
+    handler: deleteUserCart, 
   },
 ]

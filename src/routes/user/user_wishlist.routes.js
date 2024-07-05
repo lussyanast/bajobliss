@@ -1,27 +1,35 @@
+const {
+  getUserWishlist,
+  getUserWishlistById,
+  createUserWishlist,
+  updateUserWishlist,
+  deleteUserWishlist,
+} = require('../../handler/user/user_wishlist.handler');
+
 module.exports = [
   {
     method: 'GET',
     path: '/user-wishlists',
-    handler: () => "null", 
+    handler: getUserWishlist, 
   },
   {
     method: 'GET',
     path: '/user-wishlists/{wishlistId}',
-    handler: () => "null", 
+    handler: getUserWishlistById, 
   },
   {
     method: 'POST',
     path: '/user-wishlists',
-    handler: () => "null", 
+    handler: createUserWishlist, 
   },
   {
     method: 'PUT',
     path: '/user-wishlists/{wishlistId}',
-    handler: () => "null", 
+    handler: updateUserWishlist, 
   },
   {
     method: 'DELETE',
     path: '/user-wishlists/{wishlistId}',
-    handler: () => "null", 
+    handler: deleteUserWishlist, 
   },
 ]

@@ -1,22 +1,29 @@
+const {
+  getUser,
+  getUserById,
+  updateUser,
+  deleteUser,
+} = require('../../handler/user/user.handler');
+
 module.exports = [
   {
     method: 'GET',
     path: '/users',
-    handler: () => "null", 
+    handler: getUser, 
   },
   {
     method: 'GET',
     path: '/users/{userId}',
-    handler: () => "null", 
+    handler: getUserById, 
   },
   {
     method: 'PUT',
     path: '/users/{userId}',
-    handler: () => "null", 
+    handler: updateUser, 
   },
   {
     method: 'DELETE',
     path: '/users/{userId}',
-    handler: () => "null", 
+    handler: deleteUser, 
   },
 ]

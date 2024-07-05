@@ -1,27 +1,35 @@
+const {
+  getProduct,
+  getProductById,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+} = require('../../handler/product/product.handler')
+
 module.exports = [
   {
     method: 'GET',
     path: '/products',
-    handler: () => "null", 
+    handler: getProduct, 
   },
   {
     method: 'GET',
     path: '/products/{productId}',
-    handler: () => "null", 
+    handler: getProductById, 
   },
   {
     method: 'POST',
     path: '/products',
-    handler: () => "null", 
+    handler: createProduct, 
   },
   {
     method: 'PUT',
     path: '/products/{productId}',
-    handler: () => "null", 
+    handler: updateProduct, 
   },
   {
     method: 'DELETE',
     path: '/products/{productId}',
-    handler: () => "null", 
+    handler: deleteProduct, 
   },
 ]

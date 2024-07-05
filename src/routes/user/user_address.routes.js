@@ -1,27 +1,35 @@
+const {
+  getUserAddress,
+  getUserAddressById,
+  createUserAddress,
+  updateUserAddress,
+  deleteUserAddress,
+} = require('../../handler/user/user_address.handler');
+
 module.exports = [
   {
     method: 'GET',
     path: '/user-addresses',
-    handler: () => "null", 
+    handler: getUserAddress, 
   },
   {
     method: 'GET',
     path: '/user-addresses/{addressId}',
-    handler: () => "null", 
+    handler: getUserAddressById, 
   },
   {
     method: 'POST',
     path: '/user-addresses',
-    handler: () => "null", 
+    handler: createUserAddress, 
   },
   {
     method: 'PUT',
     path: '/user-addresses/{addressId}',
-    handler: () => "null", 
+    handler: updateUserAddress, 
   },
   {
     method: 'DELETE',
     path: '/user-addresses/{addressId}',
-    handler: () => "null", 
+    handler: deleteUserAddress, 
   }, 
 ]

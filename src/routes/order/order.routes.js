@@ -1,27 +1,35 @@
+const {
+  getOrder,
+  getOrderById,
+  createOrder,
+  updateOrder,
+  deleteOrder,
+} = require('../../handler/order/order.handler')
+
 module.exports = [
   {
     method: 'GET',
     path: '/orders',
-    handler: () => "null", 
+    handler: getOrder, 
   },
   {
     method: 'GET',
     path: '/orders/{orderId}',
-    handler: () => "null", 
+    handler: getOrderById, 
   },
   {
     method: 'POST',
     path: '/orders',
-    handler: () => "null", 
+    handler: createOrder, 
   },
   {
     method: 'PUT',
     path: '/orders/{orderId}',
-    handler: () => "null", 
+    handler: updateOrder, 
   },
   {
     method: 'DELETE',
     path: '/orders/{orderId}',
-    handler: () => "null", 
+    handler: deleteOrder, 
   },
 ]  

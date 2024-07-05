@@ -1,27 +1,35 @@
+const {
+  getPayment,
+  getPaymentById,
+  createPayment,
+  updatePayment,
+  deletePayment,
+} = require('../../handler/payment/payment.handler')
+
 module.exports = [
   {
     method: 'GET',
     path: '/payments',
-    handler: () => "null", 
+    handler: getPayment, 
   },
   {
     method: 'GET',
     path: '/payments/{paymentId}',
-    handler: () => "null", 
+    handler: getPaymentById, 
   },
   {
     method: 'POST',
     path: '/payments',
-    handler: () => "null", 
+    handler: createPayment, 
   },
   {
     method: 'PUT',
     path: '/payments/{paymentId}',
-    handler: () => "null", 
+    handler: updatePayment, 
   },
   {
     method: 'DELETE',
     path: '/payments/{paymentId}',
-    handler: () => "null", 
+    handler: deletePayment, 
   },
 ]
