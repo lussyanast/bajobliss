@@ -1,7 +1,6 @@
-const sequelize = require('../connection')
 const associations = require('./associations');
 
-async function syncDatabase() {
+async function syncDatabase(sequelize) {
   try {
     const models = [
       require('./feedback/feedback.model'),
