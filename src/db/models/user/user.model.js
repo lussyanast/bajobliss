@@ -13,7 +13,6 @@ module.exports = (sequelize) => {
     email: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true
     },
     user_phone: {
       type: DataTypes.STRING,
@@ -37,5 +36,9 @@ module.exports = (sequelize) => {
       allowNull: false,
       defaultValue: Sequelize.fn('NOW')
     }
-  });
+  },
+  {
+    indexes: [{ unique: true, fields: ["email"] }],
+  }
+);
 }
