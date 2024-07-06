@@ -23,8 +23,10 @@ async function syncDatabase(sequelize) {
     }
     associations(sequelize);
 
-    await sequelize.sync(process.env.NODE_ENV === 'development' ? { alter: true } : {});
-    console.log('Database & tables synchronized!');
+    if (process.env.NODE_ENV.trim() === 'dev') {
+      await sequelize.sync({ alter: true });
+      console.log('Database & tables synchronized!');
+    }
   } catch (error) {
     console.error('Unable to connect to the database:', error);
   }
