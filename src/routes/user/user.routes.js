@@ -3,7 +3,6 @@ const Joi = require('joi');
 const {
   getUser,
   getUserById,
-  getUserPPbyId,
   registerUser,
   updateUser,
   deleteUser,
@@ -19,11 +18,6 @@ module.exports = [
     method: 'GET',
     path: '/users/{userId}',
     handler: getUserById, 
-  },
-  {
-    method: 'GET',
-    path: '/users/{userId}/profile-pic',
-    handler: getUserPPbyId,
   },
   {
     method: 'POST',
@@ -44,6 +38,17 @@ module.exports = [
   {
     method: 'PUT',
     path: '/users/{userId}',
+    options: {
+      validate: {
+        payload: Joi.object({
+          name: Joi.string(),
+          email: Joi.string().email(),
+          user_phone: Joi.string().regex(/^\+?[0-9]*$/),
+          password: Joi.string().min(8),
+          profile_pic: Joi.string().uri(),
+        })
+      }
+    },
     handler: updateUser, 
   },
   {
