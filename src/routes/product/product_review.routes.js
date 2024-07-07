@@ -1,6 +1,7 @@
 const {
   getProductReview,
   getProductReviewById,
+  getProductReviewPictureById,
   createProductReview,
   updateProductReview,
   deleteProductReview,
@@ -16,6 +17,11 @@ module.exports = [
     method: 'GET',
     path: '/product-reviews/{reviewId}',
     handler: getProductReviewById, 
+  },
+  {
+    method: 'GET',
+    path: '/product-reviews/{reviewId}/picture',
+    handler: getProductReviewPictureById,
   },
   {
     method: 'POST',

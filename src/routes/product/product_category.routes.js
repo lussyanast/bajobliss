@@ -1,6 +1,7 @@
 const {
   getProductCategory,
   getProductCategoryById,
+  getProductCategoryIconById,
   createProductCategory,
   updateProductCategory,
   deleteProductCategory,
@@ -16,6 +17,11 @@ module.exports = [
     method: 'GET',
     path: '/product-categories/{categoryId}',
     handler: getProductCategoryById, 
+  },
+  {
+    method: 'GET',
+    path: '/product-categories/{categoryId}/icon',
+    handler: getProductCategoryIconById,
   },
   {
     method: 'POST',

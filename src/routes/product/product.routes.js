@@ -1,6 +1,7 @@
 const {
   getProduct,
   getProductById,
+  getProductPictureById,
   createProduct,
   updateProduct,
   deleteProduct,
@@ -16,6 +17,11 @@ module.exports = [
     method: 'GET',
     path: '/products/{productId}',
     handler: getProductById, 
+  },
+  {
+    method: 'GET',
+    path: '/products/{productId}/picture',
+    handler: getProductPictureById,
   },
   {
     method: 'POST',

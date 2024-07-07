@@ -3,6 +3,7 @@ const Joi = require('joi');
 const {
   getUser,
   getUserById,
+  getUserPPbyId,
   registerUser,
   updateUser,
   deleteUser,
@@ -18,6 +19,11 @@ module.exports = [
     method: 'GET',
     path: '/users/{userId}',
     handler: getUserById, 
+  },
+  {
+    method: 'GET',
+    path: '/users/{userId}/profile-pic',
+    handler: getUserPPbyId,
   },
   {
     method: 'POST',
