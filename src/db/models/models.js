@@ -23,7 +23,7 @@ async function syncDatabase(sequelize) {
     }
     associations(sequelize);
 
-    if (process.env.NODE_ENV.trim() === 'dev') {
+    if (process.env.NODE_ENV.trim() === 'development') {
       await sequelize.sync({ alter: true });
       console.log('Database & tables synchronized!');
     }
