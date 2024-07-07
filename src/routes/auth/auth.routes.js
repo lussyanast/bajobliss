@@ -1,29 +1,19 @@
-const { 
-  registerUser,
-  loginUser,
-  getUserData,
-  logoutUser
-} = require('../../handler/auth/auth.handler')
+const Joi = require('joi');
+
+const { auth } = require('../../handler/auth/auth.handler')
 
 module.exports = [
   {
     method: 'POST',
-    path: '/auth/login',
-    handler: loginUser, 
+    path: '/auth',
+    options: {
+      validate: {
+        payload: Joi.object({
+          identifier: Joi.string().required(),
+          password: Joi.string().required()
+        })
+      }
+    },  
+    handler: auth, 
   }, 
-  {
-    method: 'POST',
-    path: '/auth/register',
-    handler: registerUser, 
-  },
-  {
-    method: 'POST',
-    path: '/auth/me',
-    handler: () => getUserData, 
-  },
-  {
-    method: 'POST',
-    path: '/auth/logout',
-    handler: () => logoutUser, 
-  },
 ]
