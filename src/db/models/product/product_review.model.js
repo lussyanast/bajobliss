@@ -31,7 +31,7 @@ module.exports = (sequelize) => {
       allowNull: false
     },
     picture: {
-      type: DataTypes.BLOB('long'),
+      type: DataTypes.TEXT('long'),
       allowNull: true
     },
     created_at: {

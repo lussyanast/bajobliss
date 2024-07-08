@@ -11,7 +11,7 @@ module.exports = (sequelize) => {
       allowNull: false
     },
     icon: {
-      type: DataTypes.BLOB('long'),
+      type: DataTypes.TEXT('long'),
       allowNull: true
     },
     created_at: {

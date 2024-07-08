@@ -17,7 +17,6 @@ module.exports = (sequelize) =>{
     code: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true
     },
     discount_type: {
       type: DataTypes.STRING,
@@ -54,5 +53,8 @@ module.exports = (sequelize) =>{
       allowNull: false,
       defaultValue: Sequelize.fn('NOW')
     }
+  },
+  {
+    indexes: [{ unique: true, fields: ["code"] }],
   });
 }

@@ -23,8 +23,13 @@ module.exports = (sequelize) => {
       allowNull: false
     },
     profile_pic: {
-      type: DataTypes.BLOB('long'),
+      type: DataTypes.TEXT('long'),
       allowNull: true
+    },
+    role: {
+      type: DataTypes.ENUM('user', 'admin'),
+      allowNull: false,
+      defaultValue: 'user'
     },
     created_at: {
       type: DataTypes.DATE,
