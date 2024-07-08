@@ -7,21 +7,31 @@ const {
   updateUser,
   deleteUser,
 } = require('../../handler/user/user.handler');
+const verifyToken = require('../../middleware/verifyToken');
 
 module.exports = [
   {
     method: 'GET',
     path: '/users',
-    handler: getUser, 
+    handler: getUser,
+    options: {
+      auth: 'jwt',
+      pre: [verifyToken]
+    }, 
   },
   {
     method: 'GET',
     path: '/users/{userId}',
-    handler: getUserById, 
+    handler: getUserById,
+    options: {
+      auth: 'jwt',
+      pre: [verifyToken]
+    }, 
   },
   {
     method: 'POST',
     path: '/users',
+    handler: registerUser,
     options: {
       validate: {
         payload: Joi.object({
@@ -30,15 +40,18 @@ module.exports = [
           email: Joi.string().email().required(),
           user_phone: Joi.string().regex(/^\+?[0-9]*$/).required(),
           password: Joi.string().min(8).required()
-        })
+        }),
+        failAction: (request, h, err) => { throw err }
       }
     },
-    handler: registerUser,
   },
   {
     method: 'PUT',
     path: '/users/{userId}',
+    handler: updateUser,
     options: {
+      auth: 'jwt',
+      pre: [verifyToken],
       validate: {
         payload: Joi.object({
           name: Joi.string(),
@@ -46,14 +59,18 @@ module.exports = [
           user_phone: Joi.string().regex(/^\+?[0-9]*$/),
           password: Joi.string().min(8),
           profile_pic: Joi.string().uri(),
-        })
-      }
+        }),
+        failAction: (request, h, err) => { throw err }
+      },
     },
-    handler: updateUser, 
   },
   {
     method: 'DELETE',
     path: '/users/{userId}',
-    handler: deleteUser, 
+    handler: deleteUser,
+    options: {
+      auth: 'jwt',
+      pre: [verifyToken]
+    }, 
   },
 ]

@@ -14,6 +14,6 @@ module.exports = [
         })
       }
     },  
-    handler: auth, 
+    handler: auth,
   }, 
 ]

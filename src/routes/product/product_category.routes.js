@@ -1,3 +1,5 @@
+const Joi = require('joi')
+
 const {
   getProductCategory,
   getProductCategoryById,
@@ -5,6 +7,7 @@ const {
   updateProductCategory,
   deleteProductCategory,
 } = require('../../handler/product/product_category.handler')
+const verifyToken = require('../../middleware/verifyToken')
 
 module.exports = [
   {
@@ -20,16 +23,42 @@ module.exports = [
   {
     method: 'POST',
     path: '/product-categories',
-    handler: createProductCategory, 
+    handler: createProductCategory,
+    options: {
+      auth: 'jwt',
+      pre: [verifyToken],
+      validate: {
+        payload: Joi.object({
+          name: Joi.string().required(),
+          icon: Joi.string().uri(),
+        }),
+        failAction: (request, h, err) => { throw err }
+      },
+    },
   },
   {
     method: 'PUT',
     path: '/product-categories/{categoryId}',
-    handler: updateProductCategory, 
+    handler: updateProductCategory,
+    options: {
+      auth: 'jwt',
+      pre: [verifyToken],
+      validate: {
+        payload: Joi.object({
+          name: Joi.string(),
+          icon: Joi.string().uri(),
+        }),
+        failAction: (request, h, err) => { throw err }
+      },
+    }, 
   },
   {
     method: 'DELETE',
     path: '/product-categories/{categoryId}',
-    handler: deleteProductCategory, 
+    handler: deleteProductCategory,
+    options: {
+      auth: 'jwt',
+      pre: [verifyToken]
+    }, 
   },
 ]
