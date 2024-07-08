@@ -18,10 +18,6 @@ module.exports = (sequelize) => {
       type: DataTypes.FLOAT,
       allowNull: false
     },
-    picture: {
-      type: DataTypes.TEXT('long'),
-      allowNull: true
-    },
     weight: {
       type: DataTypes.FLOAT,
       allowNull: false

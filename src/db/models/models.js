@@ -10,6 +10,8 @@ async function syncDatabase(sequelize) {
       require('./payment/payment.model'),
       require('./product/product_category.model'),
       require('./product/product_review.model'),
+      require('./product/product_review_picture.model'),
+      require('./product/product_picture.model'),
       require('./product/product.model'),
       require('./user/user_address.model'),
       require('./user/user_cart.model'),

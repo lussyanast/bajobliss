@@ -7,6 +7,8 @@ function associations(sequelize) {
     Payment,
     ProductCategory,
     ProductReview,
+    ProductPicture,
+    ProductReviewImage,
     Product,
     UserAddress,
     UserCart,
@@ -94,6 +96,14 @@ function associations(sequelize) {
   // One-to-one: Order shipment has one voucher
   OrderShipment.hasOne(Voucher, { foreignKey: 'voucher_id' });
   Voucher.belongsTo(OrderShipment, { foreignKey: 'voucher_id' });
+
+  // Many-to-one: Product picture belongs to one product
+  ProductPicture.belongsTo(Product, { foreignKey: 'product_id' });
+  Product.hasMany(ProductPicture, { foreignKey: 'product_id' });
+
+  // Many-to-one: Product review picture belongs to one product review
+  ProductReviewImage.belongsTo(ProductReview, { foreignKey: 'product_review_id' });
+  ProductReview.hasMany(ProductReviewImage, { foreignKey: 'product_review_id' });
 }
 
 module.exports = associations;

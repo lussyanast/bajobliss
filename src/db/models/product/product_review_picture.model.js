@@ -1,37 +1,21 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  sequelize.define('ProductReview', {
+  sequelize.define('ProductReviewImage', {
+    review_picture_id: {
+      type: DataTypes.STRING,
+      primaryKey: true
+    },
     review_id: {
       type: DataTypes.STRING,
-      primaryKey: true,
-    },
-    product_id: {
-      type: DataTypes.STRING,
       allowNull: false,
       references: {
-        model: 'products',
-        key: 'product_id'
+        model: 'product_reviews', 
+        key: 'review_id'
       }
     },
-    user_id: {
+    image: {
       type: DataTypes.STRING,
-      allowNull: false,
-      references: {
-        model: 'users',
-        key: 'user_id'
-      }
-    },
-    rating: {
-      type: DataTypes.FLOAT,
-      allowNull: false,
-      validate: {
-        min: 1,
-        max: 5
-      }
-    },
-    message: {
-      type: DataTypes.TEXT,
       allowNull: false
     },
     created_at: {
@@ -45,4 +29,4 @@ module.exports = (sequelize) => {
       defaultValue: Sequelize.fn('NOW')
     }
   });
-}
+};
