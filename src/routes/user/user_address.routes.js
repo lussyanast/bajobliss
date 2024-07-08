@@ -66,7 +66,7 @@ module.exports = [
           address_line_2: Joi.string(),
           zip_code: Joi.string(),
           country: Joi.string(),
-          address_phone: Joi.string(),
+          address_phone: Joi.string().regex(/^\+?[0-9]*$/).required(),
         }),
         failAction: (request, h, err) => { throw err }
       },

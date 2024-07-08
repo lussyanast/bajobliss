@@ -39,7 +39,8 @@ module.exports = [
           name: Joi.string().required(),
           email: Joi.string().email().required(),
           user_phone: Joi.string().regex(/^\+?[0-9]*$/).required(),
-          password: Joi.string().min(8).required()
+          password: Joi.string().min(8).required(),
+          profile_pic: Joi.string().uri(),
         }),
         failAction: (request, h, err) => { throw err }
       }
