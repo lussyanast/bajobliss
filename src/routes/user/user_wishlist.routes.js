@@ -21,7 +21,7 @@ module.exports = [
   },
   {
     method: 'GET',
-    path: '/user-wishlists/{wishlistId}',
+    path: '/user-wishlists/{id}',
     handler: getUserWishlistById,
     options: {
       auth: 'jwt',

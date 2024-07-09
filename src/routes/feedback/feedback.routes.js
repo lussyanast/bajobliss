@@ -17,7 +17,7 @@ module.exports = [
   },
   {
     method: 'GET',
-    path: '/feedbacks/{feedbackId}',
+    path: '/feedbacks/{id}',
     handler: getFeedbackById, 
   },
   {

@@ -1,69 +1,200 @@
+const Boom = require('@hapi/boom');
+const { jwtDecode } = require('jwt-decode')
+
+const { customAlphabet } = require('nanoid');
+const nanoid = customAlphabet('1234567890abcdef', 10)
+
 const sequelize = require('../../db/connection');
 const db = sequelize.models
 
 const getUserCart = async (request, h) => {
   try {
-    const userCarts = await db.UserCart.findAll();
-    return h.response(userCarts).code(200);
+    const token = request.headers.authorization.split(' ')[1];
+    const decodedToken = jwtDecode(token);
+
+    if (decodedToken.role !== 'admin') {
+      return Boom.unauthorized('You are not authorized to access this resource');
+    }
+
+    const userCart = await db.UserCart.findAll();
+
+    return h.response(userCart).code(200);
   } catch (error) {
-    return h.response({ error: error.message }).code(500);
+    console.error('Error during get user carts:', error);
+    return Boom.badImplementation('Internal server error')
   }
 };
 
 const getUserCartById = async (request, h) => {
   try {
+    const token = request.headers.authorization.split(' ')[1];
+    const decodedToken = jwtDecode(token);
+
     const { id } = request.params;
-    const userCart = await db.UserCart.findByPk(id);
+    let userCart
+
+    userCart = await db.UserCart.findByPk(id);
     if (!userCart) {
-      return h.response({ error: 'User Cart not found' }).code(404);
+      if (decodedToken.role === 'user' && decodedToken.user_id !== id) {
+        return Boom.unauthorized('You are not authorized to access this resource');
+      }
+
+      userCart = await db.UserCart.findAll({ where: { user_id: id } });
+      if (!userCart) {
+        return Boom.notFound('User Cart not found');
+      }
     }
+    if (decodedToken.role === 'user' && decodedToken.user_id !== userCart.user_id) {
+      return Boom.unauthorized('You are not authorized to access this resource');
+    }
+
     return h.response(userCart).code(200);
   } catch (error) {
-    return h.response({ error: error.message }).code(500);
+    console.log(error);
+    return Boom.badImplementation('Internal server error');
   }
 };
 
 const createUserCart = async (request, h) => {
   try {
-    const { user_id, product_id, quantity } = request.payload;
-    const newUserCart = await db.UserCart.create({
-      user_id,
-      product_id,
-      quantity,
+    const token = request.headers.authorization.split(' ')[1];
+    const decodedToken = jwtDecode(token);
+
+    let { user_id, product_id, quantity } = request.payload;
+
+    if (decodedToken.role === 'user' && decodedToken.user_id !== user_id) {
+      return Boom.unauthorized('You are not authorized to access this resource');
+    }
+
+    const user = await db.User.findByPk(user_id);
+    if (!user) {
+      return Boom.notFound('User not found');
+    }
+
+    const product = await db.Product.findByPk(product_id);
+    if (!product) {
+      return Boom.notFound('Product not found');
+    }
+
+    const existingUserCart = await db.UserCart.findOne({
+      where: { user_id, product_id }
     });
-    return h.response(newUserCart).code(201);
+    if (existingUserCart) {
+      quantity += existingUserCart.quantity;
+    }
+
+    if (quantity > product.quantity) {
+      return Boom.badRequest('Quantity exceeds the available stock');
+    }
+    
+    const newUserCart = await db.UserCart.create({
+      cart_id: `uc_${nanoid()}`,
+      ...request.payload
+    });
+
+    return h.response({
+      message: 'User Cart created successfully',
+      userCart: newUserCart
+    }).code(201);
   } catch (error) {
-    return h.response({ error: error.message }).code(500);
+    console.log(error);
+    return Boom.badImplementation('Internal server error');
   }
 };
 
 const updateUserCart = async (request, h) => {
   try {
-    const { id } = request.params;
+    const token = request.headers.authorization.split(' ')[1];
+    const decodedToken = jwtDecode(token);
+
+    const { cartId } = request.params;
     const { user_id, product_id, quantity } = request.payload;
-    const [updatedCount, [updatedUserCart]] = await db.UserCart.update(
-      { user_id, product_id, quantity },
-      { where: { cart_id: id }, returning: true }
-    );
-    if (updatedCount === 0) {
-      return h.response({ error: 'User Cart not found' }).code(404);
+
+    if (!Object.keys(request.payload).length) {
+      return Boom.badRequest('Please provide data to update');
     }
-    return h.response(updatedUserCart).code(200);
+
+    const userCart = await db.UserCart.findByPk(cartId);
+    if (!userCart) {
+      if (decodedToken.role !== 'admin') {
+        return Boom.unauthorized('You are not authorized to access this resource');
+      }
+      return Boom.notFound('User Cart not found');
+    }
+    if (decodedToken.role === 'user' && decodedToken.user_id !== userCart.user_id) {
+      return Boom.unauthorized('You are not authorized to access this resource');
+    }
+
+    if (user_id) {
+      if (decodedToken.role !== 'admin') {
+        return Boom.unauthorized('You are not authorized to access this resource')
+      }
+      
+      const user = await db.User.findByPk(user_id);
+      if (!user) {
+        return Boom.notFound('User not found');
+      }
+    }
+
+    if (product_id) {
+      const product = await db.Product.findByPk(product_id);
+      if (!product) {
+        return Boom.notFound('Product not found');
+      }
+      if (quantity && (quantity > product.quantity)) {
+        return Boom.badRequest('Quantity exceeds the available stock');
+      }
+      if (!quantity && (userCart.quantity > product.quantity)) {
+        return Boom.badRequest('Quantity exceeds the available stock');
+      }
+    }
+
+    if (!product_id) {
+      const product = await db.Product.findByPk(userCart.product_id);
+      if (quantity && (quantity > product.quantity)) {
+        return Boom.badRequest('Quantity exceeds the available stock');
+      }
+    }
+
+    const updatedUserCart = await userCart.update({
+      ...request.payload,
+      updated_at: new Date().toISOString()
+    }, { returning: true });
+
+    return h.response({
+      message: 'User Cart updated successfully',
+      data: updatedUserCart[1][0].get()
+    }).code(200);
   } catch (error) {
-    return h.response({ error: error.message }).code(500);
+    console.log(error);
+    return Boom.badImplementation('Internal server error');
   }
 };
 
 const deleteUserCart = async (request, h) => {
   try {
-    const { id } = request.params;
-    const deletedUserCart = await db.UserCart.destroy({ where: { cart_id: id } });
-    if (deletedUserCart === 0) {
-      return h.response({ error: 'User Cart not found' }).code(404);
+    const token = request.headers.authorization.split(' ')[1];
+    const decodedToken = jwtDecode(token);
+
+    const { cartId } = request.params;
+
+    const userCart = await db.UserCart.findByPk(cartId);
+    if (!userCart) {
+      if (decodedToken.role !== 'admin') {
+        return Boom.unauthorized('You are not authorized to access this resource');
+      }
+      return Boom.notFound('User Cart not found');
     }
+    if (decodedToken.role === 'user' && decodedToken.user_id !== userCart.user_id) {
+      return Boom.unauthorized('You are not authorized to access this resource');
+    }
+
+    userCart.destroy();
+
     return h.response({ message: 'User Cart deleted successfully' }).code(200);
   } catch (error) {
-    return h.response({ error: error.message }).code(500);
+    console.log(error);
+    return Boom.badImplementation('Internal server error');
   }
 };
 

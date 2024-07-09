@@ -1,3 +1,9 @@
+const Boom = require('@hapi/boom');
+const { jwtDecode } = require('jwt-decode')
+
+const { customAlphabet } = require('nanoid');
+const nanoid = customAlphabet('1234567890abcdef', 10)
+
 const sequelize = require('../../db/connection');
 const db = sequelize.models
 
@@ -6,63 +12,136 @@ const getFeedback = async (request, h) => {
     const feedbacks = await db.Feedback.findAll();
     return h.response(feedbacks).code(200);
   } catch (error) {
-    return h.response({ error: error.message }).code(500);
+    console.log(error)
+    return Boom.badImplementation('Internal Server Error')
   }
 };
 
 const getFeedbackById = async (request, h) => {
   try {
     const { id } = request.params;
-    const feedback = await db.Feedback.findByPk(id);
+    let feedback
+    
+    feedback = await db.Feedback.findByPk(id);
     if (!feedback) {
-      return h.response({ error: 'Feedback not found' }).code(404);
+      feedback = await db.Feedback.findAll({ where: { user_id: id } });
+      if (!feedback) {
+        return Boom.notFound('Feedback not found');
+      }
     }
+
     return h.response(feedback).code(200);
   } catch (error) {
-    return h.response({ error: error.message }).code(500);
+    console.log(error)
+    return Boom.badImplementation('Internal Server Error')
   }
 };
 
 const createFeedback = async (request, h) => {
   try {
+    const token = request.headers.authorization.split(' ')[1]
+    const decodedToken = jwtDecode(token);
+
     const { user_id, message } = request.payload;
+
+    if (decodedToken.role === 'user' && decodedToken.user_id !== user_id) {
+      return Boom.unauthorized('You are not authorized to access this resource');
+    }
+
+    const user = await db.User.findByPk(user_id);
+    if (!user) {
+      return Boom.notFound('User not found');
+    }
+
     const newFeedback = await db.Feedback.create({
+      feedback_id:`feedback_${nanoid()}`,
       user_id,
       message,
     });
-    return h.response(newFeedback).code(201);
+
+    return h.response({
+      message: 'Feedback created successfully',
+      feedback: newFeedback,
+    }).code(201);
   } catch (error) {
-    return h.response({ error: error.message }).code(500);
+    console.log(error);
+    return Boom.badImplementation('Internal Server Error');
   }
 };
 
 const updateFeedback = async (request, h) => {
   try {
-    const { id } = request.params;
-    const { user_id, message } = request.payload;
-    const [updatedCount, [updatedFeedback]] = await db.Feedback.update(
-      { user_id, message },
-      { where: { feedback_id: id }, returning: true }
-    );
-    if (updatedCount === 0) {
-      return h.response({ error: 'Feedback not found' }).code(404);
+    const token = request.headers.authorization.split(' ')[1]
+    const decodedToken = jwtDecode(token)
+
+    const { feedbackId } = request.params;
+    const { user_id } = request.payload;
+
+    if (!Object.keys(request.payload).length) {
+      return Boom.badRequest('Please provide data to update');
     }
-    return h.response(updatedFeedback).code(200);
+
+    const feedback = await db.Feedback.findByPk(feedbackId);
+    if (!feedback) {
+      if (decodedToken.role !== 'admin') {
+        return Boom.unauthorized('You are not authorized to access this resource');
+      }
+      return Boom.notFound('Feedback not found');
+    }
+    if (decodedToken.role === 'user' && decodedToken.user_id !== feedback.user_id) {
+      return Boom.unauthorized('You are not authorized to access this resource')
+    }
+
+    if (user_id) {
+      if (decodedToken.role !== 'admin') {
+        return Boom.unauthorized('You are not authorized to access this resource')
+      }
+      
+      const user = await db.User.findByPk(user_id);
+      if (!user) {
+        return Boom.notFound('User not found');
+      }
+    }
+
+    const updatedFeedback = await feedback.update({
+      ...request.payload,
+      updated_at: new Date().toISOString(),
+    }, { returning: true });
+
+    return h.response({
+      message: 'Feedback updated successfully',
+      data: updatedFeedback,
+    }).code(200);
   } catch (error) {
-    return h.response({ error: error.message }).code(500);
+    console.log(error)
+    return Boom.badImplementation('Internal Server Error')
   }
 };
 
 const deleteFeedback = async (request, h) => {
   try {
-    const { id } = request.params;
-    const deletedFeedback = await db.Feedback.destroy({ where: { feedback_id: id } });
-    if (deletedFeedback === 0) {
-      return h.response({ error: 'Feedback not found' }).code(404);
+    const token = request.headers.authorization.split(' ')[1]
+    const decodedToken = jwtDecode(token)
+
+    const { feedbackId } = request.params;
+
+    const feedback = await db.Feedback.findByPk(feedbackId);
+    if (!feedback) {
+      if (decodedToken.role !== 'admin') {
+        return Boom.unauthorized('You are not authorized to access this resource');
+      }
+      return Boom.notFound('Feedback not found');
     }
+    if (decodedToken.role === 'user' && decodedToken.user_id !== feedback.user_id) {
+      return Boom.unauthorized('You are not authorized to access this resource')
+    }
+
+    await feedback.destroy();
+
     return h.response({ message: 'Feedback deleted successfully' }).code(200);
   } catch (error) {
-    return h.response({ error: error.message }).code(500);
+    console.log(error)
+    return Boom.badImplementation('Internal Server Error')
   }
 };
 

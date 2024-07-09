@@ -1,12 +1,21 @@
-const sequelize = require('../../db/connection');
-const db = sequelize.models
-
 const bcrypt = require('bcrypt');
+const { jwtDecode } = require('jwt-decode')
+
 const { Op } = require('sequelize');
 const Boom = require('@hapi/boom');
 
+const sequelize = require('../../db/connection');
+const db = sequelize.models
+
 const getUser = async (request, h) => {
   try {
+    const token = request.headers.authorization.split(' ')[1];
+    const decodedToken = jwtDecode(token);
+
+    if (decodedToken.role !== 'admin') {
+      return Boom.unauthorized('You are not authorized to access this resource');
+    }
+
     const users = await db.User.findAll({
       attributes: { exclude: ['password'] }
     });
@@ -20,12 +29,19 @@ const getUser = async (request, h) => {
 
 const getUserById = async (request, h) => {
   try {
+    const token = request.headers.authorization.split(' ')[1];
+    const decodedToken = jwtDecode(token);
+
     const { userId } = request.params;
+
+    if (decodedToken.role === 'user' && decodedToken.user_id !== userId) {
+      return Boom.unauthorized('You are not authorized to access this resource');
+    }
+
     const user = await db.User.findByPk(userId, {
       attributes: { exclude: ['password'] }
     });
-
-    if (!user) {
+    if (!user) { 
       return Boom.notFound('User not found');
     }
 
@@ -38,7 +54,7 @@ const getUserById = async (request, h) => {
 
 const registerUser = async (request, h) => {
   try {
-    const { user_id, name, email, user_phone, password } = request.payload;
+    const { user_id, name, email, user_phone, password, profile_pic } = request.payload;
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const existingUser = await db.User.findOne({
@@ -66,24 +82,21 @@ const registerUser = async (request, h) => {
       return Boom.conflict(message); 
     }
 
-    await db.User.create({
+    const newUser = {
       user_id,
       name,
       email,
       user_phone,
       password: hashedPassword,
+      profile_pic,
       role: 'user',
-    });
+    }
+    await db.User.create(newUser);
+    delete newUser.password;
 
     return h.response({
       message: 'User registered successfully',
-      user: { 
-        user_id,
-        name,
-        email,
-        user_phone,
-        role: 'user'
-      }
+      user: newUser
     }).code(201);
   } catch (error) {
     console.error('Error during register:', error);
@@ -93,22 +106,35 @@ const registerUser = async (request, h) => {
 
 const updateUser = async (request, h) => {
   try {
+    const token = request.headers.authorization.split(' ')[1];
+    const decodedToken = jwtDecode(token);
+    
     const { userId } = request.params;
     const { name, email, user_phone, password, profile_pic } = request.payload;
+
+    if (!Object.keys(request.payload).length) {
+      return Boom.badRequest('Please provide data to update');
+    }
+    
+    if (decodedToken.role === 'user' && decodedToken.user_id !== userId) {
+      return Boom.unauthorized('You are not authorized to access this resource');
+    }
 
     const user = await db.User.findByPk(userId);
     if (!user) {
       return Boom.notFound('User not found');
     }
 
-    const updatedUser = await user.update({
+    const updatedUser = {
       name: name ? name : user.name, 
       email: email ? email : user.email, 
       user_phone: user_phone ? user_phone : user.user_phone, 
       password: password ? await bcrypt.hash(password, 10) : user.password,
       profile_pic: profile_pic ? profile_pic : user.profile_pic,
       updated_at: new Date().toISOString()
-    });
+    }
+    await user.update(updatedUser);
+    delete updatedUser.password;
 
     return h.response({
       message: 'User updated successfully',
@@ -122,12 +148,21 @@ const updateUser = async (request, h) => {
 
 const deleteUser = async (request, h) => {
   try {
+    const token = request.headers.authorization.split(' ')[1];
+    const decodedToken = jwtDecode(token);
+
     const { userId } = request.params;
 
-    const deletedUser = await db.User.destroy({ where: { user_id: userId } });
-    if (deletedUser === 0) {
+    if (decodedToken.role !== 'admin') {
+      return Boom.unauthorized('You are not authorized to access this resource');
+    }
+    
+    const user = await db.User.findByPk(userId);
+    if (!user) {
       return Boom.notFound('User not found');
     }
+
+    await user.destroy();
     
     return h.response({ message: 'User deleted successfully' }).code(200);
   } catch (error) {

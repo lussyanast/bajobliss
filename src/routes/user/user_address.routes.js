@@ -21,7 +21,7 @@ module.exports = [
   },
   {
     method: 'GET',
-    path: '/user-addresses/{addressId}',
+    path: '/user-addresses/{id}',
     handler: getUserAddressById,
     options: {
       auth: 'jwt',
@@ -43,8 +43,9 @@ module.exports = [
           address_line_1: Joi.string().required(),
           address_line_2: Joi.string(),
           zip_code: Joi.string().required(),
+          city: Joi.string().required(),
           country: Joi.string().required(),
-          address_phone: Joi.string().required(),
+          address_phone: Joi.string().regex(/^\+?[0-9]*$/).required(),
         }),
         failAction: (request, h, err) => { throw err }
       },
@@ -65,6 +66,7 @@ module.exports = [
           address_line_1: Joi.string(),
           address_line_2: Joi.string(),
           zip_code: Joi.string(),
+          city: Joi.string(),
           country: Joi.string(),
           address_phone: Joi.string().regex(/^\+?[0-9]*$/).required(),
         }),

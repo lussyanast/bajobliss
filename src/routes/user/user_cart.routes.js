@@ -21,7 +21,7 @@ module.exports = [
   },
   {
     method: 'GET',
-    path: '/user-carts/{cartId}',
+    path: '/user-carts/{id}',
     handler: getUserCartById, 
     options: {
       auth: 'jwt',
