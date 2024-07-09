@@ -20,60 +20,53 @@ body {
 */
 
 header {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    
-    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
     width: 100%;
-    /* justify-content: space-between; */
     position: fixed;
+    top: 0;
     background-color: rgba(255, 255, 255, 0.3);
     border: solid white 1px;
-    align-items: center;
     color: white;
-    /* text-decoration: none; */
+    z-index: 1000;
 }
 
 .app-name h1 {
     font-family: "Sail";
     color: #0077B6;
     font-weight: 300;
-    font-size: 40px;
+    font-size: 30px;
 }
 
 .nav-web, .nav-user {
     display: flex;
     align-items: center;
-    justify-content: space-around;
-    
 }
 
 ul {
     list-style: none;
     display: flex;
-    gap: 35px;
+    gap: 20px;
 }
 
 a, p, i {
     text-decoration: none;
     color: white;
-    font-size: 25px;
-    font-family: 'Roboto Slab', sans-serif;
+    font-size: 18px;
 }
 
 h4 {
     color: white;
-    font-size: 30px;
+    font-size: 20px;
 }
 
-/*
-    Main
-*/
-
-/* main {
-    top: 0;
+/* Main 
+main {
+    flex: 1;
+    padding: 60px 20px 20px 20px; /* Padding top untuk mencegah tumpang tindih dengan header 
 } */
-
 /*
     Jumbotron
 */
@@ -127,6 +120,7 @@ h4 {
 .jumbotron-faq p  {
     font-weight: 400;
 }
+
 /*
     Faq
 */
@@ -150,7 +144,6 @@ h4 {
     text-align: left;
     outline: none;
     font-size: 15px;
-    /* transition: 0.4s; */
     border-radius: 20px;
     display: flex;
     justify-content: space-between;
@@ -184,36 +177,52 @@ h4 {
 */
 
 footer {
-    display: flex;
-    flex-direction: column;
     background-color: #3C4856;
-    padding: 5%;
-    gap: 2vw;
+    color: white;
+    padding: 15px;
+    text-align: center;
 }
 
 .foo-bar {
-    display: grid;
-    grid-template-columns: 1fr auto auto;
-    gap: 50px;
-    justify-content: center;
-    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 10px; 
+}
+
+.foo-bar > div {
+    flex: 1 1 150px; 
+    margin: 5px; 
+}
+
+.foo-name {
+    text-align: left;
 }
 
 .foo-name h1 {
     font-family: "Sail";
     color: #0077B6;
     font-weight: 300;
-    font-size: 70px;
+    font-size: 30px;
 }
 
 .foo-web, .foo-bajo {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 8px; 
+    text-align: left;
+}
+
+.foo-bar a {
+    font-size: 14px; 
+}
+
+.foo-bar h4 {
+    font-size: 18px; 
 }
 
 .credit {
-    text-align: end;
+    margin-top: 15px; 
+    font-size: 12px;
+    text-align: right;
 }
-
-
