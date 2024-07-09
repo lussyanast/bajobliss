@@ -17,30 +17,18 @@ const Faq = {
         </section>
         <section class="faq-list">
           <div class="faq-item">
-            <button class="faq"><p>Lorem Ipsum</p><i class="fas fa-chevron-down"></i></button>
+            <button class="faq"><p>Apa itu Bajobliss?</p><i class="fas fa-chevron-down"></i></button>
             <div class="faq-panel">
-              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, 
-              sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-              Ut enim ad minim veniam, 
-              quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+              <p>Bajobliss merupakan sebuah platform komersil yang memfasilitasi 
+                pembelian secara online untuk mempermudah aktivitas berbelanja produk 
+                khas Labuan Bajo.</p>
             </div>
           </div>
           <div class="faq-item">
-            <button class="faq"><p>Lorem Ipsum</p><i class="fas fa-chevron-down"></i></button>
+            <button class="faq"><p>Produk apa saja yang ada di Bajobliss?</p><i class="fas fa-chevron-down"></i></button>
             <div class="faq-panel">
-              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, 
-              sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-              Ut enim ad minim veniam, 
-              quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-            </div>
-          </div>
-          <div class="faq-item">
-            <button class="faq"><p>Lorem Ipsum</p><i class="fas fa-chevron-down"></i></button>
-            <div class="faq-panel">
-              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, 
-              sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-              Ut enim ad minim veniam, 
-              quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+              <p>Produk yang dihadirkan dalam platform Bajobliss adalah produk khas Labuan Bajo, 
+              seperti souvenir, camilan, makanan kering, dan berbagai oleh-oleh khas Labuan Bajo.</p>
             </div>
           </div>
         </section>

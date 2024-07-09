@@ -134,6 +134,10 @@ main {
     margin-block: 2%;
 }
 
+.faq-panel p {
+    font-size: 15px;
+}
+
 .faq {
     background-color: #0077B6;
     color: #444;
