@@ -3,7 +3,6 @@ const Joi = require('joi')
 const {
   getProduct,
   getProductById,
-  getProductPictureById,
   createProduct,
   updateProduct,
   deleteProduct,
@@ -22,11 +21,6 @@ module.exports = [
     handler: getProductById, 
   },
   {
-    method: 'GET',
-    path: '/products/picture/{id}',
-    handler: getProductPictureById,
-  },
-  {
     method: 'POST',
     path: '/products',
     handler: createProduct,
@@ -41,7 +35,7 @@ module.exports = [
           stock: Joi.number().required(),
           weight: Joi.number().required(),
           category_id: Joi.string().required(),
-          picture: Joi.string().uri(),
+          picture: Joi.array().items(Joi.string().uri()),
         }),
         failAction: (request, h, err) => { throw err }
       },
@@ -62,7 +56,7 @@ module.exports = [
           stock: Joi.number(),
           weight: Joi.number(),
           category_id: Joi.string(),
-          picture: Joi.string().uri(),
+          picture: Joi.array().items(Joi.string().uri()),
         }),
         failAction: (request, h, err) => { throw err }
       },

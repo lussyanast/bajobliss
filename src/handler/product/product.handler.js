@@ -35,32 +35,16 @@ const getProductById = async (request, h) => {
       return Boom.notFound('Product not found');
     }
 
-    return h.response(product).code(200);
+    const productPicture = await db.ProductPicture.findAll({
+      where: { product_id: product.product_id}
+    });
+
+    return h.response({
+      ...product,
+      picture: productPicture
+    }).code(200);
   } catch (error) {
     console.log('Error during get product by id:', error);
-    return Boom.badImplementation('Internal server error');
-  }
-};
-
-const getProductPictureById = async (request, h) => {
-  try {
-    const { id } = request.params;
-
-    const productPicture = await db.ProductPicture.findAll({
-      where: {
-        [Op.or]: [
-          { product_picture_id: id }, 
-          { product_id: id } 
-        ]
-      }
-    });
-    if (!productPicture) {
-      return Boom.notFound('Product Picture not found');
-    }
-
-    return h.response(productPicture).code(200);
-  } catch (error) {
-    console.log('Error during get product picture by id:', error);
     return Boom.badImplementation('Internal server error');
   }
 };
@@ -70,14 +54,35 @@ const createProduct = async (request, h) => {
     const token = request.headers.authorization.split(' ')[1];
     const decodedToken = jwtDecode(token);
 
+    const { name, description, price, stock, weight, category_id, picture } = request.payload;
+
     if (decodedToken.role !== 'admin') {
       return Boom.unauthorized('You are not authorized to access this resource');
     }
 
+    const category = await db.Category.findByPk(category_id);
+    if (!category) {
+      return Boom.notFound('Category not found');
+    }
+
     const newProduct = await db.Product.create({
       product_id: `product_${nanoid()}`,
-      ...request.payload,
+      name,
+      description,
+      price,
+      stock,
+      weight,
+      category_id,
     });
+
+    if (picture && picture.length > 0) {
+      const picturesData = picture.map((pic) => ({
+        product_picture_id: `pp_${nanoid()}`,
+        product_id: newProduct.product_id,
+        picture: pic,
+      }));
+      await db.ProductPicture.bulkCreate(picturesData);
+    }
 
     return h.response({
       message: 'Product created successfully',
@@ -95,6 +100,7 @@ const updateProduct = async (request, h) => {
     const decodedToken = jwtDecode(token);
 
     const { productId } = request.params;
+    const { name, description, price, stock, weight, category_id, picture } = request.payload;
 
     if (decodedToken.role !== 'admin') {
       return Boom.unauthorized('You are not authorized to access this resource');
@@ -109,14 +115,51 @@ const updateProduct = async (request, h) => {
       return Boom.notFound('Product not found');
     }
 
-    const updatedProduct = await product.update({
-      ...request.payload,
+    if (category_id) {
+      const category = await db.Category.findByPk(category_id);
+      if (!category) {
+        return Boom.notFound('Category not found');
+      }
+    }
+
+    await product.update({
+      name: name ? name : product.name,
+      description: description ? description : product.description,
+      price: price ? price : product.price,
+      stock: stock ? stock : product.stock,
+      weight: weight ? weight : product.weight,
+      category_id: category_id ? category_id : product.category_id,
       updated_at: new Date().toISOString(),
-    }, { returning: true });
+    });
+
+    if (picture && picture.length > 0) {
+      for (const pic of picture) {
+        if (pic.product_picture_id) {
+          const productPicture = db.ProductPicture.findOne({
+            where: {
+              [Op.and]: [
+                { product_picture_id: pic.product_picture_id },
+                { product_id: productId }
+              ]
+            }
+          });
+          if (!productPicture) {
+            return Boom.notFound('Product Picture not found');
+          }
+
+          await productPicture.update({ picture: pic.picture });
+        } else {
+          await db.ProductPicture.create({
+            product_id: productId,
+            picture: pic.picture,
+          });
+        }
+      }
+    }
 
     return h.response({
       message: 'Product updated successfully',
-      data: updatedProduct[1][0].get()
+      data: product
     }).code(200);
   } catch (error) {
     console.log('Error during update product:', error);
@@ -152,7 +195,6 @@ const deleteProduct = async (request, h) => {
 module.exports = {
   getProduct,
   getProductById,
-  getProductPictureById,
   createProduct,
   updateProduct,
   deleteProduct,
