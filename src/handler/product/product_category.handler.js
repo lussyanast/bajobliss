@@ -1,9 +1,6 @@
 const Boom = require('@hapi/boom');
 const { jwtDecode } = require('jwt-decode')
 
-const { customAlphabet } = require('nanoid');
-const nanoid = customAlphabet('1234567890abcdef', 10)
-
 const sequelize = require('../../db/connection');
 const db = sequelize.models
 
@@ -42,10 +39,7 @@ const createProductCategory = async (request, h) => {
       return Boom.unauthorized('You are not authorized to access this resource');
     }
 
-    const newProductCategory = await db.ProductCategory.create({
-      category_id: `pc-${nanoid()}`,
-      ...request.payload,
-    });
+    const newProductCategory = await db.ProductCategory.create(request.payload);
 
     return h.response({
       message: 'Product Category created successfully',
