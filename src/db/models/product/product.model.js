@@ -28,7 +28,7 @@ module.exports = (sequelize) => {
     },
     category_id: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: 'product_categories',
         key: 'category_id',

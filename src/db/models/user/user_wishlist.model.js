@@ -16,7 +16,7 @@ module.exports = (sequelize) => {
     },
     product_id: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: 'products',
         key: 'product_id',
