@@ -1,6 +1,9 @@
 const Boom = require('@hapi/boom');
 const { jwtDecode } = require('jwt-decode')
 
+const { customAlphabet } = require('nanoid');
+const nanoid = customAlphabet('1234567890abcdef', 2)
+
 const sequelize = require('../../db/connection');
 const db = sequelize.models
 
@@ -18,7 +21,15 @@ const getProductCategoryById = async (request, h) => {
   try {
     const { categoryId } = request.params;
 
-    const productCategory = await db.ProductCategory.findByPk(categoryId);
+    const productCategory = await db.ProductCategory.findByPk(categoryId, {
+      include: [
+        {
+          model: db.Product,
+          as: 'products',
+        },
+      ],
+    
+    });
     if (!productCategory) {
       return Boom.notFound('Product Category not found');
     }
@@ -39,7 +50,10 @@ const createProductCategory = async (request, h) => {
       return Boom.unauthorized('You are not authorized to access this resource');
     }
 
-    const newProductCategory = await db.ProductCategory.create(request.payload);
+    const newProductCategory = await db.ProductCategory.create({
+      category_id: `pc-${nanoid()}`,
+      ...request.payload,
+    });
 
     return h.response({
       message: 'Product Category created successfully',
@@ -78,7 +92,7 @@ const updateProductCategory = async (request, h) => {
 
     return h.response({
       message: 'Product Category updated successfully',
-      data: updatedProductCategory[1][0].get()
+      data: updatedProductCategory
     }).code(200);
   } catch (error) {
     console.log('Error during update product category:', error);
