@@ -10,7 +10,14 @@ const db = sequelize.models
 
 const getProduct = async (request, h) => {
   try {
-    const products = await db.Product.findAll();
+    const products = await db.Product.findAll({
+      include: [
+        {
+          model: db.ProductPicture,
+          as: 'pictures',
+        },
+      ],
+    });
 
     return h.response(products).code(200);
   } catch (error) {
@@ -29,20 +36,20 @@ const getProductById = async (request, h) => {
           { product_id: id }, 
           { category_id: id } 
         ]
-      }
+      },
+      include: [
+        {
+          model: db.ProductPicture,
+          as: 'pictures',
+        },
+      ],
     });
+    
     if (!product) {
       return Boom.notFound('Product not found');
     }
 
-    const productPicture = await db.ProductPicture.findAll({
-      where: { product_id: product.product_id}
-    });
-
-    return h.response({
-      ...product,
-      picture: productPicture
-    }).code(200);
+    return h.response(product).code(200);
   } catch (error) {
     console.log('Error during get product by id:', error);
     return Boom.badImplementation('Internal server error');
@@ -60,7 +67,7 @@ const createProduct = async (request, h) => {
       return Boom.unauthorized('You are not authorized to access this resource');
     }
 
-    const category = await db.Category.findByPk(category_id);
+    const category = await db.ProductCategory.findByPk(category_id);
     if (!category) {
       return Boom.notFound('Category not found');
     }
@@ -84,9 +91,18 @@ const createProduct = async (request, h) => {
       await db.ProductPicture.bulkCreate(picturesData);
     }
 
+    const product = await db.Product.findByPk(newProduct.product_id, {
+      include: [
+        {
+          model: db.ProductPicture,
+          as: 'pictures',
+        },
+      ],
+    });
+
     return h.response({
       message: 'Product created successfully',
-      data: newProduct,
+      data: product,
     }).code(201);
   } catch (error) {
     console.log('Error during create product:', error);
@@ -110,13 +126,20 @@ const updateProduct = async (request, h) => {
       return Boom.badRequest('Please provide data to update');
     }
     
-    const product = await db.Product.findByPk(productId);
+    const product = await db.Product.findByPk(productId, {
+      include: [
+        {
+          model: db.ProductPicture,
+          as: 'pictures',
+        },
+      ],
+    });
     if (!product) {
       return Boom.notFound('Product not found');
     }
 
     if (category_id) {
-      const category = await db.Category.findByPk(category_id);
+      const category = await db.ProductCategory.findByPk(category_id);
       if (!category) {
         return Boom.notFound('Category not found');
       }
@@ -150,6 +173,7 @@ const updateProduct = async (request, h) => {
           await productPicture.update({ picture: pic.picture });
         } else {
           await db.ProductPicture.create({
+            product_picture_id: `pp_${nanoid()}`,
             product_id: productId,
             picture: pic.picture,
           });

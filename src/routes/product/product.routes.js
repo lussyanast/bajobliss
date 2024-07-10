@@ -56,7 +56,12 @@ module.exports = [
           stock: Joi.number(),
           weight: Joi.number(),
           category_id: Joi.string(),
-          picture: Joi.array().items(Joi.string().uri()),
+          picture: Joi.array().items(
+            Joi.object({
+              product_picture_id: Joi.number().optional(),
+              picture: Joi.string().uri().required()
+            })
+          ),
         }),
         failAction: (request, h, err) => { throw err }
       },
