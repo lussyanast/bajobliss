@@ -1,27 +1,20 @@
 const Search = {
   async render() {
     return `
-      <div class="content"></div>
+      <div class="search-content">
+        <div class="search-container">
+          <input type="text" id="searchInput" placeholder="Search here...">
+          <button id="searchButton"><i class="fas fa-search"></i></button>
+        </div>
+      </div>
     `;
   },
 
   async afterRender() {
-    const displayProducts = () => {
-      const content = document.querySelector('.content');
-      let htmlContent = '';
-
-      htmlContent += `
-        <div class="product-list">
-          <div class="product-item">
-            <h1>Search</h1>
-          </div>
-        </div>
-      `;
-
-      content.innerHTML = htmlContent;
-    };
-
-    displayProducts();
+    const searchButton = document.getElementById('searchButton');
+    searchButton.addEventListener('click', () => {
+      
+    });
   },
 };
 
