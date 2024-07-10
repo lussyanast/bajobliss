@@ -1,88 +1,151 @@
+const { Op } = require('sequelize');
+const Boom = require('@hapi/boom');
+const { jwtDecode } = require('jwt-decode')
+
+const { customAlphabet } = require('nanoid');
+const nanoid = customAlphabet('1234567890abcdef', 10)
+
 const sequelize = require('../../db/connection');
 const db = sequelize.models
 
 const getProduct = async (request, h) => {
   try {
     const products = await db.Product.findAll();
+
     return h.response(products).code(200);
   } catch (error) {
-    return h.response({ error: error.message }).code(500);
+    console.log('Error during get products:', error);
+    return Boom.badImplementation('Internal server error')
   }
 };
 
 const getProductById = async (request, h) => {
   try {
     const { id } = request.params;
-    const product = await db.Product.findByPk(id);
+
+    const product = await db.Product.findAll({
+      where: {
+        [Op.or]: [
+          { product_id: id }, 
+          { category_id: id } 
+        ]
+      }
+    });
     if (!product) {
-      return h.response({ error: 'Product not found' }).code(404);
+      return Boom.notFound('Product not found');
     }
+
     return h.response(product).code(200);
   } catch (error) {
-    return h.response({ error: error.message }).code(500);
+    console.log('Error during get product by id:', error);
+    return Boom.badImplementation('Internal server error');
   }
 };
 
 const getProductPictureById = async (request, h) => {
   try {
     const { id } = request.params;
-    const product = await db.Product.findByPk(id, {
-      attributes: ['picture'],
+
+    const productPicture = await db.ProductPicture.findAll({
+      where: {
+        [Op.or]: [
+          { product_picture_id: id }, 
+          { product_id: id } 
+        ]
+      }
     });
-    if (!product) {
-      return h.response({ error: 'Product not found' }).code(404);
+    if (!productPicture) {
+      return Boom.notFound('Product Picture not found');
     }
-    return h.response(product.picture).code(200);
+
+    return h.response(productPicture).code(200);
   } catch (error) {
-    return h.response({ error: error.message }).code(500);
+    console.log('Error during get product picture by id:', error);
+    return Boom.badImplementation('Internal server error');
   }
 };
 
 const createProduct = async (request, h) => {
   try {
-    const { name, description, price, picture, weight, stock, category_id } = request.payload;
+    const token = request.headers.authorization.split(' ')[1];
+    const decodedToken = jwtDecode(token);
+
+    if (decodedToken.role !== 'admin') {
+      return Boom.unauthorized('You are not authorized to access this resource');
+    }
+
     const newProduct = await db.Product.create({
-      name,
-      description,
-      price,
-      picture,
-      weight,
-      stock,
-      category_id,
+      product_id: `product_${nanoid()}`,
+      ...request.payload,
     });
-    return h.response(newProduct).code(201);
+
+    return h.response({
+      message: 'Product created successfully',
+      data: newProduct,
+    }).code(201);
   } catch (error) {
-    return h.response({ error: error.message }).code(500);
+    console.log('Error during create product:', error);
+    return Boom.badImplementation('Internal server error');
   }
 };
 
 const updateProduct = async (request, h) => {
   try {
-    const { id } = request.params;
-    const { name, description, price, picture, weight, stock, category_id } = request.payload;
-    const [updatedCount, [updatedProduct]] = await db.Product.update(
-      { name, description, price, picture, weight, stock, category_id },
-      { where: { product_id: id }, returning: true }
-    );
-    if (updatedCount === 0) {
-      return h.response({ error: 'Product not found' }).code(404);
+    const token = request.headers.authorization.split(' ')[1];
+    const decodedToken = jwtDecode(token);
+
+    const { productId } = request.params;
+
+    if (decodedToken.role !== 'admin') {
+      return Boom.unauthorized('You are not authorized to access this resource');
     }
-    return h.response(updatedProduct).code(200);
+
+    if (!Object.keys(request.payload).length) {
+      return Boom.badRequest('Please provide data to update');
+    }
+    
+    const product = await db.Product.findByPk(productId);
+    if (!product) {
+      return Boom.notFound('Product not found');
+    }
+
+    const updatedProduct = await product.update({
+      ...request.payload,
+      updated_at: new Date().toISOString(),
+    }, { returning: true });
+
+    return h.response({
+      message: 'Product updated successfully',
+      data: updatedProduct[1][0].get()
+    }).code(200);
   } catch (error) {
-    return h.response({ error: error.message }).code(500);
+    console.log('Error during update product:', error);
+    return Boom.badImplementation('Internal server error');
   }
 };
 
 const deleteProduct = async (request, h) => {
   try {
-    const { id } = request.params;
-    const deletedProduct = await db.Product.destroy({ where: { product_id: id } });
-    if (deletedProduct === 0) {
-      return h.response({ error: 'Product not found' }).code(404);
+    const token = request.headers.authorization.split(' ')[1];
+    const decodedToken = jwtDecode(token);
+
+    const { productId } = request.params;
+
+    if (decodedToken.role !== 'admin') {
+      return Boom.unauthorized('You are not authorized to access this resource');
     }
+
+    const product = await db.Product.findByPk(productId);
+    if (!product) {
+      return Boom.notFound('Product not found');
+    }
+
+    await product.destroy();
+
     return h.response({ message: 'Product deleted successfully' }).code(200);
   } catch (error) {
-    return h.response({ error: error.message }).code(500);
+    console.log('Error during delete product:', error);
+    return Boom.badImplementation('Internal server error');
   }
 };
 

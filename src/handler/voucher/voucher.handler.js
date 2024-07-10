@@ -1,3 +1,9 @@
+const Boom = require('@hapi/boom');
+const { jwtDecode } = require('jwt-decode')
+
+const { customAlphabet } = require('nanoid');
+const nanoid = customAlphabet('1234567890abcdef', 10)
+
 const sequelize = require('../../db/connection');
 const db = sequelize.models
 
@@ -6,70 +12,107 @@ const getVoucher = async (request, h) => {
     const vouchers = await db.Voucher.findAll();
     return h.response(vouchers).code(200);
   } catch (error) {
-    return h.response({ error: error.message }).code(500);
+    console.log('Error during get vouchers:', error);
+    return Boom.badImplementation('Internal server error');
   }
 };
 
 const getVoucherById = async (request, h) => {
   try {
-    const { id } = request.params;
-    const voucher = await db.Voucher.findByPk(id);
+    const { voucherId } = request.params;
+
+    const voucher = await db.Voucher.findByPk(voucherId);
     if (!voucher) {
-      return h.response({ error: 'Voucher not found' }).code(404);
+      return Boom.notFound('Voucher not found');
     }
+
     return h.response(voucher).code(200);
   } catch (error) {
-    return h.response({ error: error.message }).code(500);
+    console.log('Error during get voucher by id:', error);
+    return Boom.badImplementation('Internal server error');
   }
 };
 
 const createVoucher = async (request, h) => {
   try {
-    const { name, description, code, discount_type, value, target, start_date, end_date, is_active } = request.payload;
+    const token = request.headers.authorization.split(' ')[1];
+    const decodedToken = jwtDecode(token);
+
+    if (decodedToken.role !== 'admin') {
+      return Boom.unauthorized('You are not authorized to access this resource');
+    }
+
     const newVoucher = await db.Voucher.create({
-      name,
-      description,
-      code,
-      discount_type,
-      value,
-      target,
-      start_date,
-      end_date,
-      is_active,
+      voucher_id: `v-${nanoid()}`,
+      ...request.payload,
     });
-    return h.response(newVoucher).code(201);
+
+    return h.response({
+      message: 'Voucher created successfully',
+      data: newVoucher,
+    }).code(201);
   } catch (error) {
-    return h.response({ error: error.message }).code(500);
+    console.log('Error during create voucher:', error);
+    return Boom.badImplementation('Internal server error');
   }
 };
 
 const updateVoucher = async (request, h) => {
   try {
-    const { id } = request.params;
-    const { name, description, code, discount_type, value, target, start_date, end_date, is_active } = request.payload;
-    const [updatedCount, [updatedVoucher]] = await db.Voucher.update(
-      { name, description, code, discount_type, value, target, start_date, end_date, is_active },
-      { where: { voucher_id: id }, returning: true }
-    );
-    if (updatedCount === 0) {
-      return h.response({ error: 'Voucher not found' }).code(404);
+    const token = request.headers.authorization.split(' ')[1];
+    const decodedToken = jwtDecode(token);
+
+    const { voucherId } = request.params;
+
+    if (decodedToken.role !== 'admin') {
+      return Boom.unauthorized('You are not authorized to access this resource');
     }
-    return h.response(updatedVoucher).code(200);
+
+    if (!Object.keys(request.payload).length) {
+      return Boom.badRequest('Please provide data to update');
+    }
+
+    const voucher = await db.Voucher.findByPk(voucherId);
+    if (!voucher) {
+      return Boom.notFound('Voucher not found');
+    }
+
+    const updatedVoucher = await voucher.update({
+      ...request.payload,
+        updated_at: new Date().toISOString(),
+    }, { returning: true });
+
+    return h.response({
+      message: 'Voucher updated successfully',
+      data: updatedVoucher[1][0].get(),
+    }).code(200);
   } catch (error) {
-    return h.response({ error: error.message }).code(500);
+    console.log('Error during update voucher:', error);
+    return Boom.badImplementation('Internal server error');
   }
 };
 
 const deleteVoucher = async (request, h) => {
   try {
-    const { id } = request.params;
-    const deletedVoucher = await db.Voucher.destroy({ where: { voucher_id: id } });
-    if (deletedVoucher === 0) {
-      return h.response({ error: 'Voucher not found' }).code(404);
+    const token = request.headers.authorization.split(' ')[1];
+    const decodedToken = jwtDecode(token);
+
+    const { voucherId } = request.params;
+
+    if (decodedToken.role !== 'admin') {
+      return Boom.unauthorized('You are not authorized to access this resource');
     }
+
+    const voucher = await db.Voucher.findByPk(voucherId);
+    if (!voucher) {
+      return Boom.notFound('Voucher not found');
+    }
+
+    await voucher.destroy();
     return h.response({ message: 'Voucher deleted successfully' }).code(200);
   } catch (error) {
-    return h.response({ error: error.message }).code(500);
+    console.log('Error during delete voucher:', error);
+    return Boom.badImplementation('Internal server error');
   }
 };
 

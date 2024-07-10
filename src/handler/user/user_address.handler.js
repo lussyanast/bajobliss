@@ -17,10 +17,10 @@ const getUserAddress = async (request, h) => {
     }
 
     const userAddresses = await db.UserAddress.findAll();
-
     return h.response(userAddresses).code(200);
   } catch (error) {
-    return h.response({ error: error.message }).code(500);
+    console.error('Error during get user addresses:', error);
+    return Boom.badImplementation('Internal server error')
   }
 };
 
@@ -49,7 +49,7 @@ const getUserAddressById = async (request, h) => {
 
     return h.response(userAddress).code(200);
   } catch (error) {
-    console.log(error);
+    console.log('Error during get user address by id:', error);
     return Boom.badImplementation('Internal server error');
   }
 };
@@ -80,7 +80,7 @@ const createUserAddress = async (request, h) => {
       data: newUserAddress,
     }).code(201);
   } catch (error) {
-    console.log(error);
+    console.log('Error during create user address:', error);
     return Boom.badImplementation('Internal server error');
   }
 };
@@ -129,7 +129,7 @@ const updateUserAddress = async (request, h) => {
       data: updatedUserAddress,
     }).code(200);
   } catch (error) {
-    console.log(error);
+    console.log('Error during update user address:', error);
     return Boom.badImplementation('Internal server error');
   }
 };
@@ -156,7 +156,7 @@ const deleteUserAddress = async (request, h) => {
 
     return h.response({ message: 'User Address deleted successfully' }).code(200);
   } catch (error) {
-    console.log(error);
+    console.log('Error during delete user address:', error);
     return Boom.badImplementation('Internal server error');
   }
 };

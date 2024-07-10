@@ -1,86 +1,194 @@
+const { Op } = require('sequelize');
+const Boom = require('@hapi/boom');
+const { jwtDecode } = require('jwt-decode')
+
+const { customAlphabet } = require('nanoid');
+const nanoid = customAlphabet('1234567890abcdef', 10)
+
 const sequelize = require('../../db/connection');
 const db = sequelize.models
 
 const getProductReview = async (request, h) => {
   try {
     const productReviews = await db.ProductReview.findAll();
+
     return h.response(productReviews).code(200);
   } catch (error) {
-    return h.response({ error: error.message }).code(500);
+    console.log('Error during get product reviews:', error);
+    return Boom.badImplementation('Internal server error');
   }
 };
 
 const getProductReviewById = async (request, h) => {
   try {
     const { id } = request.params;
-    const productReview = await db.ProductReview.findByPk(id);
+    
+    const productReview = await db.ProductReview.findAll({
+      where: {
+        [Op.or]: [
+          { wishlist_id: id },
+          { product_id: id },
+          { user_id: id }
+        ]
+      }
+    });
     if (!productReview) {
       return h.response({ error: 'Product Review not found' }).code(404);
-    }
+    } 
+    
     return h.response(productReview).code(200);
   } catch (error) {
-    return h.response({ error: error.message }).code(500);
+    console.log('Error during get product review by id:', error);
+    return Boom.badImplementation('Internal server error');
   }
 };
 
 const getProductReviewPictureById = async (request, h) => {
   try {
     const { id } = request.params;
-    const productReview = await db.ProductReview.findByPk(id, {
-      attributes: ['picture'],
+
+    const productReviewPicture = await db.ProductReviewPicture.findAll({
+      where: {
+        [Op.or]: [
+          { review_picture_id: id }, 
+          { review_id: id } 
+        ]
+      }
     });
-    if (!productReview) {
-      return h.response({ error: 'Product Review not found' }).code(404);
+    if (!productReviewPicture) {
+      return Boom.notFound('Product Review Picture not found');
     }
-    return h.response(productReview.picture).code(200);
+
+    return h.response(productReviewPicture).code(200);
   } catch (error) {
-    return h.response({ error: error.message }).code(500);
+    console.log('Error during get product review picture by id:', error);
+    return Boom.badImplementation('Internal server error');
   }
 }
 
 const createProductReview = async (request, h) => {
   try {
-    const { product_id, user_id, review, rating, picture } = request.payload;
-    const newProductReview = await db.ProductReview.create({
-      product_id,
-      user_id,
-      review,
-      rating,
-      picture,
+    const token = request.headers.authorization.split(' ')[1];
+    const decodedToken = jwtDecode(token);
+
+    const { product_id, user_id } = request.payload;
+
+    if (decodedToken.role === 'user' && decodedToken.user_id !== user_id) {
+      return Boom.unauthorized('You are not authorized to access this resource');
+    }
+
+    const product = await db.Product.findByPk(product_id);
+    if (!product) {
+      return Boom.notFound('Product not found');
+    }
+
+    const user = await db.User.findByPk(user_id);
+    if (!user) {
+      return Boom.notFound('User not found');
+    }
+
+    const existingProductReview = await db.ProductReview.findOne({
+      where: { product_id, user_id }
     });
-    return h.response(newProductReview).code(201);
+    if (existingProductReview) {
+      return Boom.conflict('Product Review already exists');
+    }
+
+    const newProductReview = await db.ProductReview.create({
+      review_id: `rv-${nanoid()}`,
+      ...request.payload,
+    });
+
+    return h.response({
+      message: 'Product Review created successfully',
+      data: newProductReview,
+    }).code(201);
   } catch (error) {
-    return h.response({ error: error.message }).code(500);
+    console.log('Error during create product review:', error);
+    return Boom.badImplementation('Internal server error');
   }
 };
 
 const updateProductReview = async (request, h) => {
   try {
-    const { id } = request.params;
-    const { product_id, user_id, review, rating, picture } = request.payload;
-    const [updatedCount, [updatedProductReview]] = await db.ProductReview.update(
-      { product_id, user_id, review, rating, picture },
-      { where: { review_id: id }, returning: true }
-    );
-    if (updatedCount === 0) {
-      return h.response({ error: 'Product Review not found' }).code(404);
+    const token = request.headers.authorization.split(' ')[1];
+    const decodedToken = jwtDecode(token);
+
+    const { reviewId } = request.params;
+    const { product_id, user_id } = request.payload;
+
+    if (!Object.keys(request.payload).length) {
+      return Boom.badRequest('Please provide data to update');
     }
-    return h.response(updatedProductReview).code(200);
+
+    const productReview = await db.ProductReview.findByPk(reviewId);
+    if (!productReview) {
+      if (decodedToken.role !== 'admin') {
+        return Boom.unauthorized('You are not authorized to access this resource');
+      }
+      return Boom.notFound('Product Review not found');
+    }
+    if (decodedToken.role === 'user' && decodedToken.user_id !== productReview.user_id) {
+      return Boom.unauthorized('You are not authorized to access this resource');
+    }
+
+    if (product_id) {
+      const product = await db.Product.findByPk(product_id);
+      if (!product) {
+        return Boom.notFound('Product not found');
+      }
+    }
+
+    if (user_id) {
+      if (decodedToken.role !== 'admin') {
+        return Boom.unauthorized('You are not authorized to access this resource')
+      }
+
+      const user = await db.User.findByPk(user_id);
+      if (!user) {
+        return Boom.notFound('User not found');
+      }
+    }
+
+    const updatedProductReview = await productReview.update({
+      ...request.payload,
+      updated_at: new Date().toISOString(),
+    }, { returning: true});
+
+    return h.response({
+      message: 'Product Review updated successfully',
+      data: updatedProductReview[1][0].get()
+    }).code(200);
   } catch (error) {
-    return h.response({ error: error.message }).code(500);
+    console.log('Error during update product review:', error);
+    return Boom.badImplementation('Internal server error');
   }
 };
 
 const deleteProductReview = async (request, h) => {
   try {
-    const { id } = request.params;
-    const deletedProductReview = await db.ProductReview.destroy({ where: { review_id: id } });
-    if (deletedProductReview === 0) {
-      return h.response({ error: 'Product Review not found' }).code(404);
+    const token = request.headers.authorization.split(' ')[1];
+    const decodedToken = jwtDecode(token);
+
+    const { reviewId } = request.params;
+
+    const productReview = await db.ProductReview.findByPk(reviewId);
+    if (!productReview) {
+      if (decodedToken.role !== 'admin') {
+        return Boom.unauthorized('You are not authorized to access this resource');
+      }
+      return Boom.notFound('Product Review not found');
     }
+    if (decodedToken.role === 'user' && decodedToken.user_id !== productReview.user_id) {
+      return Boom.unauthorized('You are not authorized to access this resource');
+    }
+
+    await productReview.destroy();
+
     return h.response({ message: 'Product Review deleted successfully' }).code(200);
   } catch (error) {
-    return h.response({ error: error.message }).code(500);
+    console.log('Error during delete product review:', error);
+    return Boom.badImplementation('Internal server error');
   }
 };
 

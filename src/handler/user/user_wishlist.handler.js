@@ -17,7 +17,6 @@ const getUserWishlist = async (request, h) => {
     }
 
     const userWishlists = await db.UserWishlist.findAll();
-
     return h.response(userWishlists).code(200);
   } catch (error) {
     console.error('Error during get user wishlists:', error);
@@ -50,7 +49,7 @@ const getUserWishlistById = async (request, h) => {
 
     return h.response(userWishlist).code(200);
   } catch (error) {
-    console.log(error);
+    console.log('Error during get user wishlist by id:', error);
     return Boom.badImplementation('Internal server error');
   }
 };
@@ -93,7 +92,7 @@ const createUserWishlist = async (request, h) => {
       data: newUserWishlist
     }).code(201);
   } catch (error) {
-    console.log(error);
+    console.log('Error during create user wishlist:', error);
     return Boom.badImplementation('Internal server error');
   }
 };
@@ -149,7 +148,7 @@ const updateUserWishlist = async (request, h) => {
       data: updatedUserWishlist[1][0].get()
     }).code(200);
   } catch (error) {
-    console.log(error);
+    console.log('Error during update user wishlist:', error);
     return Boom.badImplementation('Internal server error');
   }
 };
@@ -172,11 +171,10 @@ const deleteUserWishlist = async (request, h) => {
       return Boom.unauthorized('You are not authorized to access this resource');
     }
 
-    userWishlist.destroy();
-
+    await userWishlist.destroy();
     return h.response({ message: 'User Wishlist deleted successfully' }).code(200);
   } catch (error) {
-    console.log(error);
+    console.log('Error during delete user wishlist:', error);
     return Boom.badImplementation('Internal server error');
   }
 };

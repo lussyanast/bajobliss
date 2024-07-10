@@ -18,12 +18,12 @@ module.exports = [
   },
   {
     method: 'GET',
-    path: '/product-reviews/{reviewId}',
+    path: '/product-reviews/{id}',
     handler: getProductReviewById, 
   },
   {
     method: 'GET',
-    path: '/product-reviews/{reviewId}/picture',
+    path: '/product-reviews/picture/{id}',
     handler: getProductReviewPictureById,
   },
   {

@@ -17,7 +17,6 @@ const getUserCart = async (request, h) => {
     }
 
     const userCart = await db.UserCart.findAll();
-
     return h.response(userCart).code(200);
   } catch (error) {
     console.error('Error during get user carts:', error);
@@ -50,7 +49,7 @@ const getUserCartById = async (request, h) => {
 
     return h.response(userCart).code(200);
   } catch (error) {
-    console.log(error);
+    console.log('Error during get user cart by id:', error);
     return Boom.badImplementation('Internal server error');
   }
 };
@@ -97,7 +96,7 @@ const createUserCart = async (request, h) => {
       userCart: newUserCart
     }).code(201);
   } catch (error) {
-    console.log(error);
+    console.log('Error during create user cart:', error);
     return Boom.badImplementation('Internal server error');
   }
 };
@@ -166,7 +165,7 @@ const updateUserCart = async (request, h) => {
       data: updatedUserCart[1][0].get()
     }).code(200);
   } catch (error) {
-    console.log(error);
+    console.log('Error during update user cart:', error);
     return Boom.badImplementation('Internal server error');
   }
 };
@@ -189,11 +188,10 @@ const deleteUserCart = async (request, h) => {
       return Boom.unauthorized('You are not authorized to access this resource');
     }
 
-    userCart.destroy();
-
+    await userCart.destroy();
     return h.response({ message: 'User Cart deleted successfully' }).code(200);
   } catch (error) {
-    console.log(error);
+    console.log('Error during delete user cart:', error);
     return Boom.badImplementation('Internal server error');
   }
 };

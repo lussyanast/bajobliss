@@ -5,6 +5,7 @@ const { customAlphabet } = require('nanoid');
 const nanoid = customAlphabet('1234567890abcdef', 10)
 
 const sequelize = require('../../db/connection');
+const { Op } = require('sequelize');
 const db = sequelize.models
 
 const getFeedback = async (request, h) => {
@@ -12,7 +13,7 @@ const getFeedback = async (request, h) => {
     const feedbacks = await db.Feedback.findAll();
     return h.response(feedbacks).code(200);
   } catch (error) {
-    console.log(error)
+    console.log('Error during get feedbacks:', error)
     return Boom.badImplementation('Internal Server Error')
   }
 };
@@ -20,19 +21,22 @@ const getFeedback = async (request, h) => {
 const getFeedbackById = async (request, h) => {
   try {
     const { id } = request.params;
-    let feedback
     
-    feedback = await db.Feedback.findByPk(id);
-    if (!feedback) {
-      feedback = await db.Feedback.findAll({ where: { user_id: id } });
-      if (!feedback) {
-        return Boom.notFound('Feedback not found');
+    const feedback = await db.Feedback.findAll({
+      where: {
+        [Op.or]: [ 
+          { feedback_id: id },
+          { user_id: id }
+        ]
       }
+    });
+    if (!feedback) {
+      return Boom.notFound('Feedback not found');
     }
 
     return h.response(feedback).code(200);
   } catch (error) {
-    console.log(error)
+    console.log('Error during get feedback by id:', error)
     return Boom.badImplementation('Internal Server Error')
   }
 };
@@ -64,7 +68,7 @@ const createFeedback = async (request, h) => {
       feedback: newFeedback,
     }).code(201);
   } catch (error) {
-    console.log(error);
+    console.log('Error during create feedback:', error);
     return Boom.badImplementation('Internal Server Error');
   }
 };
@@ -113,7 +117,7 @@ const updateFeedback = async (request, h) => {
       data: updatedFeedback,
     }).code(200);
   } catch (error) {
-    console.log(error)
+    console.log('Error during update feedback:', error)
     return Boom.badImplementation('Internal Server Error')
   }
 };
@@ -137,10 +141,9 @@ const deleteFeedback = async (request, h) => {
     }
 
     await feedback.destroy();
-
     return h.response({ message: 'Feedback deleted successfully' }).code(200);
   } catch (error) {
-    console.log(error)
+    console.log('Error during delete feedback:', error)
     return Boom.badImplementation('Internal Server Error')
   }
 };

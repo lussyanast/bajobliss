@@ -18,12 +18,12 @@ module.exports = [
   },
   {
     method: 'GET',
-    path: '/products/{productId}',
+    path: '/products/{id}',
     handler: getProductById, 
   },
   {
     method: 'GET',
-    path: '/products/{productId}/picture',
+    path: '/products/picture/{id}',
     handler: getProductPictureById,
   },
   {

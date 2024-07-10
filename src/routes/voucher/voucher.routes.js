@@ -13,20 +13,12 @@ module.exports = [
   {
     method: 'GET',
     path: '/vouchers',
-    handler: getVoucher,
-    options: {
-      auth: 'jwt',
-      pre: [verifyToken]
-    },   
+    handler: getVoucher,  
   },
   {
     method: 'GET',
     path: '/vouchers/{voucherId}',
     handler: getVoucherById,
-    options: {
-      auth: 'jwt',
-      pre: [verifyToken]
-    },   
   },
   {
     method: 'POST',

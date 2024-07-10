@@ -19,7 +19,6 @@ const getUser = async (request, h) => {
     const users = await db.User.findAll({
       attributes: { exclude: ['password'] }
     });
-    
     return h.response(users).code(200);
   } catch (error) {
     console.error('Error during get users:', error);
@@ -163,7 +162,6 @@ const deleteUser = async (request, h) => {
     }
 
     await user.destroy();
-    
     return h.response({ message: 'User deleted successfully' }).code(200);
   } catch (error) {
     console.error('Error during delete user:', error);
