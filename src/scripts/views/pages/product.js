@@ -48,7 +48,12 @@ const Product = {
   },
 
   async afterRender() {
-    // Additional logic after rendering if needed
+    const productItems = document.querySelectorAll('.product-item');
+    productItems.forEach(item => {
+      item.addEventListener('click', () => {
+        window.location.href = '#/product-detail';
+      });
+    });
   },
 };
 
