@@ -62,8 +62,8 @@ h4 {
     font-size: 20px;
 }
 
-/* Main 
-main {
+/* Main */
+/* main {
     flex: 1;
     padding: 60px 20px 20px 20px; /* Padding top untuk mencegah tumpang tindih dengan header 
 } */
@@ -232,12 +232,19 @@ footer {
 }
 
 /* Search */
+.search-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
 .search-content {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: calc(100vh - 175px);
+    height: 200px; /* Adjust height as needed */
     background-color: #6E94BC;
+    padding-top: 60px; /* to offset the fixed header */
 }
 
 .search-container {
@@ -373,6 +380,77 @@ footer {
     background-color: #D3D9DF;
 }
 
+/* Edit Profile Form */
+.edit-profile-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 500px;
+    background-color: #E3E9EF;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.edit-profile-form .form-group {
+    margin-bottom: 15px;
+}
+
+.edit-profile-form label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.edit-profile-form .form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.edit-profile-form .profile-image {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.edit-profile-form .profile-image img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.edit-profile-form .upload-photo-btn {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #0077B6;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.edit-profile-form .upload-photo-btn:hover {
+    background-color: #005f99;
+}
+
+.edit-profile-form .submit-btn {
+    padding: 10px 24px;
+    background-color: #0077B6;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.edit-profile-form .submit-btn:hover {
+    background-color: #005f99;
+}
+
 /* Category */
 
 .category-section {
@@ -418,40 +496,11 @@ footer {
 }
 
 /* Product Section */
-.product-content {
-    padding-top: 60px; /* Ensure it does not overlap with the header */
-}
-
-.featured-product {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 40px;
-    background-color: #a0b9d6;
-}
-
-.featured-product-image {
-    background-color: #cfcfcf;
-    padding: 100px;
-    border-radius: 10px;
-    text-align: center;
-}
-
-.featured-product-image i {
-    font-size: 48px;
-    color: #888;
-}
-
-.featured-product-text {
-    margin-top: 10px;
-    font-size: 18px;
-    color: #333;
-}
-
 .product-section {
     text-align: center;
     padding: 40px 20px;
     background-color: #f0f0f0;
+    flex: 1;
 }
 
 .product-header {

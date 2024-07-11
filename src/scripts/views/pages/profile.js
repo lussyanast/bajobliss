@@ -32,6 +32,64 @@ const Profile = {
     `;
   },
 
+  async renderEditProfile() {
+    return `
+      <div class="content">
+        <div class="profile-content">
+          <h1>My Profile</h1>
+          <form class="edit-profile-form">
+            <div class="form-group">
+              <div class="profile-image">
+                <img src="" alt="Profile Image">
+                <button type="button" class="upload-photo-btn">Upload Photo</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="name">Nama</label>
+              <input type="text" id="name" name="name" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="phone">No. Telp</label>
+              <input type="text" id="phone" name="phone" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="gender">Jenis kelamin (Optional)</label>
+              <select id="gender" name="gender" class="form-control">
+                <option value="male">Laki-laki</option>
+                <option value="female">Perempuan</option>
+                <option value="other">Lainnya</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="address">Alamat</label>
+              <textarea id="address" name="address" class="form-control"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="postal-code">Kode Pos</label>
+              <input type="text" id="postal-code" name="postal-code" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="city">Kota</label>
+              <input type="text" id="city" name="city" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="country">Negara</label>
+              <select id="country" name="country" class="form-control">
+                <option value="indonesia">Indonesia</option>
+                <option value="other">Lainnya</option>
+              </select>
+            </div>
+            <button type="submit" class="submit-btn">Submit</button>
+          </form>
+        </div>
+      </div>
+    `;
+  },
+
   async afterRender() {
     const displayProfile = async () => {
       const content = document.querySelector('.content');
@@ -40,7 +98,22 @@ const Profile = {
       }
     };
 
-    displayProfile();
+    const displayEditProfile = async () => {
+      const content = document.querySelector('.content');
+      if (content) {
+        content.innerHTML = await this.renderEditProfile();
+      }
+    };
+
+    await displayProfile();
+
+    const editProfileBtn = document.querySelector('.edit-profile-btn');
+    if (editProfileBtn) {
+      editProfileBtn.addEventListener('click', async (event) => {
+        event.preventDefault();
+        await displayEditProfile();
+      });
+    }
   },
 };
 
