@@ -372,3 +372,47 @@ footer {
 .logout:hover {
     background-color: #D3D9DF;
 }
+
+/* Category */
+
+.category-section {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.category-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: white;
+}
+
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.category-item {
+    background-color: #E3E9EF;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.category-image {
+    background-color: #cfcfcf;
+    padding: 40px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.category-image i {
+    font-size: 24px;
+    color: #888;
+}
+
+.category-text {
+    font-size: 16px;
+    color: #333;
+}
