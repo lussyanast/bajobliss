@@ -49,9 +49,9 @@ function associations(sequelize) {
   Product.hasMany(ProductReview, { foreignKey: 'product_id', as: 'reviews' });
   ProductReview.belongsTo(Product, { foreignKey: 'product_id', onDelete: 'CASCADE' });
 
-  // One-to-many: User has many product reviews
-  User.hasMany(ProductReview, { foreignKey: 'user_id', as: 'reviews' });
-  ProductReview.belongsTo(User, { foreignKey: 'user_id', onDelete: 'CASCADE' });
+  // One-to-one: Order has one product review
+  Order.hasOne(ProductReview, { foreignKey: 'order_id', as: 'review' });
+  ProductReview.belongsTo(Order, { foreignKey: 'order_id', onDelete: 'CASCADE' });  
 
   // One-to-many: User has many user wishlists
   User.hasMany(UserWishlist, { foreignKey: 'user_id', as: 'wishlists' });

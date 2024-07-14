@@ -3,7 +3,6 @@ const Joi = require('joi')
 const {
   getProductReview,
   getProductReviewById,
-  getProductReviewPictureById,
   createProductReview,
   updateProductReview,
   deleteProductReview,
@@ -22,11 +21,6 @@ module.exports = [
     handler: getProductReviewById, 
   },
   {
-    method: 'GET',
-    path: '/product-reviews/picture/{id}',
-    handler: getProductReviewPictureById,
-  },
-  {
     method: 'POST',
     path: '/product-reviews',
     handler: createProductReview,
@@ -36,7 +30,7 @@ module.exports = [
       validate: {
         payload: Joi.object({
           product_id: Joi.string().required(),
-          user_id: Joi.string().uri().required(),
+          order_id: Joi.string().required(),
           review: Joi.string().required(),
           rating: Joi.number().required(),
           picture: Joi.string().uri(),
@@ -54,10 +48,10 @@ module.exports = [
       pre: [verifyToken],
       validate: {
         payload: Joi.object({
-          product_id: Joi.string().required(),
-          user_id: Joi.string().uri().required(),
-          review: Joi.string().required(),
-          rating: Joi.number().required(),
+          product_id: Joi.string(),
+          order_id: Joi.string(),
+          review: Joi.string(),
+          rating: Joi.number(),
           picture: Joi.string().uri(),
         }),
         failAction: (request, h, err) => { throw err }

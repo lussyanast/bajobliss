@@ -14,12 +14,12 @@ module.exports = (sequelize) => {
         key: 'product_id'
       }
     },
-    user_id: {
+    order_id: {
       type: DataTypes.STRING,
       allowNull: false,
       references: {
-        model: 'users',
-        key: 'user_id'
+        model: 'orders',
+        key: 'order_id'
       }
     },
     rating: {

@@ -30,7 +30,13 @@ const getProductReviewById = async (request, h) => {
           { product_id: id },
           { user_id: id }
         ]
-      }
+      },
+      include: [
+        {
+          model: db.ProductReviewPicture,
+          as: 'pictures',
+        }
+      ]
     });
     if (!productReview) {
       return h.response({ error: 'Product Review not found' }).code(404);
@@ -42,29 +48,6 @@ const getProductReviewById = async (request, h) => {
     return Boom.badImplementation('Internal server error');
   }
 };
-
-const getProductReviewPictureById = async (request, h) => {
-  try {
-    const { id } = request.params;
-
-    const productReviewPicture = await db.ProductReviewPicture.findAll({
-      where: {
-        [Op.or]: [
-          { review_picture_id: id }, 
-          { review_id: id } 
-        ]
-      }
-    });
-    if (!productReviewPicture) {
-      return Boom.notFound('Product Review Picture not found');
-    }
-
-    return h.response(productReviewPicture).code(200);
-  } catch (error) {
-    console.log('Error during get product review picture by id:', error);
-    return Boom.badImplementation('Internal server error');
-  }
-}
 
 const createProductReview = async (request, h) => {
   try {
@@ -157,7 +140,7 @@ const updateProductReview = async (request, h) => {
 
     return h.response({
       message: 'Product Review updated successfully',
-      data: updatedProductReview[1][0].get()
+      data: updatedProductReview
     }).code(200);
   } catch (error) {
     console.log('Error during update product review:', error);
@@ -195,7 +178,6 @@ const deleteProductReview = async (request, h) => {
 module.exports = {
   getProductReview,
   getProductReviewById,
-  getProductReviewPictureById,
   createProductReview,
   updateProductReview,
   deleteProductReview,
