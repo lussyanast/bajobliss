@@ -33,6 +33,9 @@ const getUserWishlistById = async (request, h) => {
     let userWishlist
 
     userWishlist = await db.UserWishlist.findByPk(id);
+    if (userWishlist && decodedToken.role === 'user' && decodedToken.user_id !== userWishlist.user_id) {
+      return Boom.unauthorized('You are not authorized to access this resource');
+    }
     if (!userWishlist) {
       if (decodedToken.role === 'user' && decodedToken.user_id !== id) {
         return Boom.unauthorized('You are not authorized to access this resource');
@@ -43,9 +46,7 @@ const getUserWishlistById = async (request, h) => {
         return Boom.notFound('User Wishlist not found');
       }
     }
-    if (decodedToken.role === 'user' && decodedToken.user_id !== userWishlist.user_id) {
-      return Boom.unauthorized('You are not authorized to access this resource');
-    }
+
 
     return h.response(userWishlist).code(200);
   } catch (error) {
@@ -145,7 +146,7 @@ const updateUserWishlist = async (request, h) => {
 
     return h.response({
       message: 'User Wishlist updated successfully',
-      data: updatedUserWishlist[1][0].get()
+      data: updatedUserWishlist
     }).code(200);
   } catch (error) {
     console.log('Error during update user wishlist:', error);

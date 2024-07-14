@@ -33,6 +33,9 @@ const getUserAddressById = async (request, h) => {
     let userAddress;
 
     userAddress = await db.UserAddress.findByPk(id);
+    if (userAddress && decodedToken.role === 'user' && decodedToken.user_id !== userAddress.user_id) {
+      return Boom.unauthorized('You are not authorized to access this resource');
+    }
     if (!userAddress) {
       if (decodedToken.role === 'user' && decodedToken.user_id !== id) {
         return Boom.unauthorized('You are not authorized to access this resource');
@@ -42,9 +45,6 @@ const getUserAddressById = async (request, h) => {
       if (!userAddress) {
         return Boom.notFound('User Address not found');
       }
-    }
-    if (decodedToken.role === 'user' && decodedToken.user_id !== userAddress.user_id) {
-      return Boom.unauthorized('You are not authorized to access this resource');
     }
 
     return h.response(userAddress).code(200);

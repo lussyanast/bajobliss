@@ -84,7 +84,7 @@ const updateVoucher = async (request, h) => {
 
     return h.response({
       message: 'Voucher updated successfully',
-      data: updatedVoucher[1][0].get(),
+      data: updatedVoucher,
     }).code(200);
   } catch (error) {
     console.log('Error during update voucher:', error);

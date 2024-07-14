@@ -33,6 +33,9 @@ const getUserCartById = async (request, h) => {
     let userCart
 
     userCart = await db.UserCart.findByPk(id);
+    if (userCart && decodedToken.role === 'user' && decodedToken.user_id !== userCart.user_id) {
+      return Boom.unauthorized('You are not authorized to access this resource');
+    }
     if (!userCart) {
       if (decodedToken.role === 'user' && decodedToken.user_id !== id) {
         return Boom.unauthorized('You are not authorized to access this resource');
@@ -42,9 +45,6 @@ const getUserCartById = async (request, h) => {
       if (!userCart) {
         return Boom.notFound('User Cart not found');
       }
-    }
-    if (decodedToken.role === 'user' && decodedToken.user_id !== userCart.user_id) {
-      return Boom.unauthorized('You are not authorized to access this resource');
     }
 
     return h.response(userCart).code(200);
@@ -71,18 +71,25 @@ const createUserCart = async (request, h) => {
     }
 
     const product = await db.Product.findByPk(product_id);
+
     if (!product) {
       return Boom.notFound('Product not found');
     }
 
-    const existingUserCart = await db.UserCart.findOne({
+    let existingUserCart = await db.UserCart.findOne({
       where: { user_id, product_id }
     });
     if (existingUserCart) {
-      quantity += existingUserCart.quantity;
+      existingUserCart = await existingUserCart.update({
+        quantity: existingUserCart.quantity + quantity
+      });
+      return h.response({
+        message: 'User Cart updated successfully',
+        userCart: existingUserCart
+      }).code(200);
     }
 
-    if (quantity > product.quantity) {
+    if (quantity > product.stock) {
       return Boom.badRequest('Quantity exceeds the available stock');
     }
     
@@ -140,17 +147,17 @@ const updateUserCart = async (request, h) => {
       if (!product) {
         return Boom.notFound('Product not found');
       }
-      if (quantity && (quantity > product.quantity)) {
+      if (quantity && (quantity > product.stock)) {
         return Boom.badRequest('Quantity exceeds the available stock');
       }
-      if (!quantity && (userCart.quantity > product.quantity)) {
+      if (!quantity && (userCart.quantity > product.stock)) {
         return Boom.badRequest('Quantity exceeds the available stock');
       }
     }
 
     if (!product_id) {
       const product = await db.Product.findByPk(userCart.product_id);
-      if (quantity && (quantity > product.quantity)) {
+      if (quantity && (quantity > product.stock)) {
         return Boom.badRequest('Quantity exceeds the available stock');
       }
     }
@@ -162,7 +169,7 @@ const updateUserCart = async (request, h) => {
 
     return h.response({
       message: 'User Cart updated successfully',
-      data: updatedUserCart[1][0].get()
+      data: updatedUserCart
     }).code(200);
   } catch (error) {
     console.log('Error during update user cart:', error);
