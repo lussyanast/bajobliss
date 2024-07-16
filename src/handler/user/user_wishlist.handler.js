@@ -60,9 +60,9 @@ const createUserWishlist = async (request, h) => {
     const token = request.headers.authorization.split(' ')[1];
     const decodedToken = jwtDecode(token);
 
-    const { user_id, product_id } = request.payload;
+    const { user_id, product_id, ...payload } = request.payload;
 
-    if (decodedToken.role === 'user' && decodedToken.user_id !== user_id) {
+    if (user_id && decodedToken.role === 'user' && decodedToken.user_id !== user_id) {
       return Boom.unauthorized('You are not authorized to access this resource');
     }
 
@@ -85,7 +85,8 @@ const createUserWishlist = async (request, h) => {
 
     const newUserWishlist = await db.UserWishlist.create({
       wishlist_id: `uw_${nanoid()}`,
-      ...request.payload,
+      user_id : user_id ? user_id : decodedToken.user_id,
+      ...payload,
     });
 
     return h.response({

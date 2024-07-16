@@ -59,7 +59,7 @@ const createFeedback = async (request, h) => {
 
     const newFeedback = await db.Feedback.create({
       feedback_id:`feedback_${nanoid()}`,
-      user_id,
+      user_id : user_id ? user_id : decodedToken.user_id,
       message,
     });
 
@@ -87,9 +87,6 @@ const updateFeedback = async (request, h) => {
 
     const feedback = await db.Feedback.findByPk(feedbackId);
     if (!feedback) {
-      if (decodedToken.role !== 'admin') {
-        return Boom.unauthorized('You are not authorized to access this resource');
-      }
       return Boom.notFound('Feedback not found');
     }
     if (decodedToken.role === 'user' && decodedToken.user_id !== feedback.user_id) {

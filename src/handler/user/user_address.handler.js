@@ -59,9 +59,9 @@ const createUserAddress = async (request, h) => {
     const token = request.headers.authorization.split(' ')[1];
     const decodedToken = jwtDecode(token);
 
-    const { user_id } = request.payload;
+    const { user_id, ...payload } = request.payload;
 
-    if (decodedToken.role === 'user' && decodedToken.user_id !== user_id) {
+    if (user_id && decodedToken.role === 'user' && decodedToken.user_id !== user_id) {
       return Boom.unauthorized('You are not authorized to access this resource');
     }
 
@@ -72,7 +72,8 @@ const createUserAddress = async (request, h) => {
 
     const newUserAddress = await db.UserAddress.create({
       address_id: `ua-${nanoid()}`,
-      ...request.payload,
+      user_id : user_id ? user_id : decodedToken.user_id,
+      ...payload,
     });
 
     return h.response({

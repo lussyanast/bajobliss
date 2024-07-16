@@ -37,7 +37,7 @@ module.exports = [
       pre: [verifyToken],
       validate: {
         payload: Joi.object({
-          user_id: Joi.string().required(),
+          user_id: Joi.string(),
           user_name: Joi.string().required(),
           address_type: Joi.string().required(),
           address_line_1: Joi.string().required(),

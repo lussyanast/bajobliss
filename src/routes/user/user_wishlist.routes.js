@@ -37,7 +37,7 @@ module.exports = [
       pre: [verifyToken],
       validate: {
         payload: Joi.object({
-          user_id: Joi.string().required(),
+          user_id: Joi.string(),
           product_id: Joi.string().required(),
         }),
         failAction: (request, h, err) => { throw err }

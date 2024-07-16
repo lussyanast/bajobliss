@@ -59,9 +59,9 @@ const createUserCart = async (request, h) => {
     const token = request.headers.authorization.split(' ')[1];
     const decodedToken = jwtDecode(token);
 
-    let { user_id, product_id, quantity } = request.payload;
+    let { user_id, product_id, quantity, ...payload } = request.payload;
 
-    if (decodedToken.role === 'user' && decodedToken.user_id !== user_id) {
+    if (user_id && decodedToken.role === 'user' && decodedToken.user_id !== user_id) {
       return Boom.unauthorized('You are not authorized to access this resource');
     }
 
@@ -95,7 +95,8 @@ const createUserCart = async (request, h) => {
     
     const newUserCart = await db.UserCart.create({
       cart_id: `uc_${nanoid()}`,
-      ...request.payload
+      user_id : user_id ? user_id : decodedToken.user_id,
+      ...payload
     });
 
     return h.response({
