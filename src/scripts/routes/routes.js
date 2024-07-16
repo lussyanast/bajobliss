@@ -7,6 +7,7 @@ import Products from '../views/pages/product';
 import ProductDetail from '../views/pages/product-detail';
 import Profile from '../views/pages/profile';
 import Search from '../views/pages/search';
+import Login from '../views/pages/login';
 
 const routes = {
   '/': Home,
@@ -18,6 +19,7 @@ const routes = {
   '/search': Search,
   '/cart': Cart,
   '/profile': Profile,
+  '/login': Login,
 };
 
 export default routes;
