@@ -120,10 +120,10 @@ const updateUserAddress = async (request, h) => {
       }
     }
 
-    const updatedUserAddress = await userAddress.update({
-      ...request.payload,
-      updated_at: new Date().toISOString(),
-    }, { returning: true });
+    const updatedUserAddress = await userAddress.update(
+      request.payload,
+      { returning: true }
+    );
 
     return h.response({
       message: 'User Address updated successfully',

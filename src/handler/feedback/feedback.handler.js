@@ -104,10 +104,10 @@ const updateFeedback = async (request, h) => {
       }
     }
 
-    const updatedFeedback = await feedback.update({
-      ...request.payload,
-      updated_at: new Date().toISOString(),
-    }, { returning: true });
+    const updatedFeedback = await feedback.update(
+      request.payload,
+      { returning: true }
+    );
 
     return h.response({
       message: 'Feedback updated successfully',

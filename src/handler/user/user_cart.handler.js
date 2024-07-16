@@ -163,10 +163,10 @@ const updateUserCart = async (request, h) => {
       }
     }
 
-    const updatedUserCart = await userCart.update({
-      ...request.payload,
-      updated_at: new Date().toISOString()
-    }, { returning: true });
+    const updatedUserCart = await userCart.update(
+      request.payload,
+      { returning: true }
+    );
 
     return h.response({
       message: 'User Cart updated successfully',

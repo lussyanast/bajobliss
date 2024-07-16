@@ -130,8 +130,7 @@ const updateUser = async (request, h) => {
       user_phone: user_phone ? user_phone : user.user_phone, 
       password: password ? await bcrypt.hash(password, 10) : user.password,
       profile_pic: profile_pic ? profile_pic : user.profile_pic,
-      updated_at: new Date().toISOString()
-    }
+    };
     await user.update(updatedUser);
     delete updatedUser.password;
 

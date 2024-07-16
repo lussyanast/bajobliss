@@ -85,10 +85,10 @@ const updateProductCategory = async (request, h) => {
       return Boom.notFound('Product Category not found');
     }
 
-    const updatedProductCategory = await productCategory.update({
-      ...request.payload,
-      updated_at: new Date().toISOString(),
-    }, { returning: true });
+    const updatedProductCategory = await productCategory.update(
+      request.payload,
+      { returning: true }
+    );
 
     return h.response({
       message: 'Product Category updated successfully',

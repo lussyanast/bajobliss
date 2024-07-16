@@ -152,7 +152,6 @@ const updateProduct = async (request, h) => {
       stock: stock ? stock : product.stock,
       weight: weight ? weight : product.weight,
       category_id: category_id ? category_id : product.category_id,
-      updated_at: new Date().toISOString(),
     });
 
     if (picture && picture.length > 0) {

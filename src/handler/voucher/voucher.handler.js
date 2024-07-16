@@ -77,10 +77,10 @@ const updateVoucher = async (request, h) => {
       return Boom.notFound('Voucher not found');
     }
 
-    const updatedVoucher = await voucher.update({
-      ...request.payload,
-        updated_at: new Date().toISOString(),
-    }, { returning: true });
+    const updatedVoucher = await voucher.update(
+      request.payload,
+      { returning: true }
+    );
 
     return h.response({
       message: 'Voucher updated successfully',
