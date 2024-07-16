@@ -1,8 +1,19 @@
-import { productAPI } from '../../globals/config.js';
+import { productAPI } from '../../data/route.api';
 
 const NewIn = {
   async render() {
     let products = [];
+
+    const rupiah = (value) => {
+      const numberFormat = new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        minimumFractionDigits: 0,
+      });
+
+      return numberFormat.format(value);
+    };
+
     try {
       const response = await productAPI.getProducts();
       products = response.data;
@@ -18,16 +29,16 @@ const NewIn = {
             <button class="filter-button">Filter</button>
           </div>
           <div class="product-grid">
-            ${products.map(product => `
+            ${products.map((product) => `
               <div class="product-item">
                 <div class="product-image">
-                  <img src="${product.gambar}" alt="${product.nama}">
+                  <img src="${product.pictures[0].picture}" alt="${product.name}">
                 </div>
                 <div class="product-info">
-                  <p class="product-text">${product.nama}</p>
-                  <p class="product-description">${product.deskripsi}</p>
+                  <p class="product-text">${product.name}</p>
+                  <p class="product-description">${product.description}</p>
                   <div class="product-price-stock">
-                    <p class="product-price">Rp. ${product.harga}</p>
+                    <p class="product-price">${rupiah(product.price)}</p>
                     <p class="product-stock">Stock: ${product.stock || 'N/A'}</p>
                   </div>
                   <div class="product-rating">
@@ -45,7 +56,7 @@ const NewIn = {
 
   async afterRender() {
     const productItems = document.querySelectorAll('.product-item');
-    productItems.forEach(item => {
+    productItems.forEach((item) => {
       item.addEventListener('click', () => {
         window.location.href = '#/product-detail';
       });

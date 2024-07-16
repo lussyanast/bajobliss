@@ -41,8 +41,12 @@ const Search = {
   async searchProducts(query) {
     // Simulasi pencarian produk, ganti dengan API request yang sesuai
     const dummyResults = [
-      { id: 1, name: 'Product 1', description: 'Description 1', price: '$10', stock: '20', rating: 4.5, reviews: 22 },
-      { id: 2, name: 'Product 2', description: 'Description 2', price: '$20', stock: '15', rating: 4.0, reviews: 18 },
+      {
+        id: 1, name: 'Product 1', description: 'Description 1', price: '$10', stock: '20', rating: 4.5, reviews: 22,
+      },
+      {
+        id: 2, name: 'Product 2', description: 'Description 2', price: '$20', stock: '15', rating: 4.0, reviews: 18,
+      },
       // Tambahkan produk lainnya sesuai kebutuhan
     ];
     return dummyResults;
@@ -50,7 +54,7 @@ const Search = {
 
   displayResults(results) {
     const productGrid = document.getElementById('productGrid');
-    productGrid.innerHTML = results.map(product => `
+    productGrid.innerHTML = results.map((product) => `
       <div class="product-item">
         <div class="product-image"><i class="fas fa-image"></i></div>
         <div class="product-info">
@@ -67,7 +71,7 @@ const Search = {
         </div>
       </div>
     `).join('');
-  }
+  },
 };
 
 export default Search;

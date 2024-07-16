@@ -8,7 +8,7 @@ const Faq = {
   async afterRender() {
     const displayFaq = () => {
       const content = document.querySelector('.content');
-      let htmlContent = `
+      const htmlContent = `
         <section class="jumbotron-faq">
           <div class="faq-desc">
             <h1>FREQUENTLY ASKED QUESTION</h1>
@@ -40,7 +40,7 @@ const Faq = {
     displayFaq();
 
     const faqButtons = document.querySelectorAll('.faq');
-    faqButtons.forEach(button => {
+    faqButtons.forEach((button) => {
       button.addEventListener('click', () => {
         button.classList.toggle('active');
         const panel = button.nextElementSibling;
