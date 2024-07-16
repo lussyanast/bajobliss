@@ -1,43 +1,45 @@
+import { productAPI } from '../../globals/config.js';
+
 const NewIn = {
   async render() {
+    let products = [];
+    try {
+      const response = await productAPI.getProducts();
+      products = response.data;
+    } catch (error) {
+      console.error('Error fetching new products: ', error);
+    }
+
     return `
-    <div class="product-content">
-    <section class="product-section">
-      <div class="product-header">
-        <h2 class="product-title">New In (xx)</h2>
-        <button class="filter-button">Filter</button>
-      </div>
-      <div class="product-grid">
-        ${Array(9).fill(`
-          <div class="product-item">
-            <div class="product-image">
-              <i class="fa fa-picture-o" aria-hidden="true"></i>
-            </div>
-            <div class="product-info">
-              <p class="product-text">Lorem ipsum</p>
-              <p class="product-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin sollicitudin vel ligula quis tristique.</p>
-              <div class="product-price-stock">
-                <p class="product-price">Rp. xxx.xxx,-</p>
-                <p class="product-stock">Stock: xxx</p>
-              </div>
-              <div class="product-rating">
-                <span class="rating-stars">⭐⭐⭐⭐⭐</span>
-                <span class="rating-count">(xx reviews)</span>
-              </div>
-            </div>
+      <div class="product-content">
+        <section class="product-section">
+          <div class="product-header">
+            <h2 class="product-title">New In (${products.length})</h2>
+            <button class="filter-button">Filter</button>
           </div>
-        `).join('')}
+          <div class="product-grid">
+            ${products.map(product => `
+              <div class="product-item">
+                <div class="product-image">
+                  <img src="${product.gambar}" alt="${product.nama}">
+                </div>
+                <div class="product-info">
+                  <p class="product-text">${product.nama}</p>
+                  <p class="product-description">${product.deskripsi}</p>
+                  <div class="product-price-stock">
+                    <p class="product-price">Rp. ${product.harga}</p>
+                    <p class="product-stock">Stock: ${product.stock || 'N/A'}</p>
+                  </div>
+                  <div class="product-rating">
+                    <span class="rating-stars">⭐⭐⭐⭐⭐</span>
+                    <span class="rating-count">(${product.reviewsCount || 0} reviews)</span>
+                  </div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </section>
       </div>
-    </section>
-    <div class="pagination">
-      <button class="page-button">1</button>
-      <button class="page-button">2</button>
-      <button class="page-button">3</button>
-      <button class="page-button">4</button>
-      <button class="page-button">5</button>
-      <button class="page-button">></button>
-    </div>
-  </div>
     `;
   },
 
