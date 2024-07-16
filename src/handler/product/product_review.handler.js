@@ -54,10 +54,14 @@ const createProductReview = async (request, h) => {
     const token = request.headers.authorization.split(' ')[1];
     const decodedToken = jwtDecode(token);
 
-    const { product_id, user_id } = request.payload;
+    const { product_id, order_id } = request.payload;
 
-    if (decodedToken.role === 'user' && decodedToken.user_id !== user_id) {
+    const order = await db.Order.findByPk(order_id);
+    if (decodedToken.role === 'user' && decodedToken.user_id !== order.user_id) {
       return Boom.unauthorized('You are not authorized to access this resource');
+    }
+    if (!order) {
+      return Boom.notFound('Order not found');
     }
 
     const product = await db.Product.findByPk(product_id);
@@ -65,13 +69,8 @@ const createProductReview = async (request, h) => {
       return Boom.notFound('Product not found');
     }
 
-    const user = await db.User.findByPk(user_id);
-    if (!user) {
-      return Boom.notFound('User not found');
-    }
-
     const existingProductReview = await db.ProductReview.findOne({
-      where: { product_id, user_id }
+      where: { product_id, order_id }
     });
     if (existingProductReview) {
       return Boom.conflict('Product Review already exists');
@@ -136,7 +135,7 @@ const updateProductReview = async (request, h) => {
     const updatedProductReview = await productReview.update({
       ...request.payload,
       updated_at: new Date().toISOString(),
-    }, { returning: true});
+    }, { returning: true });
 
     return h.response({
       message: 'Product Review updated successfully',
