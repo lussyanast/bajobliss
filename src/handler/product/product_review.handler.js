@@ -118,22 +118,24 @@ const updateProductReview = async (request, h) => {
     }
 
     if (product_id) {
+      if (!decodedToken.role === 'admin') {
+        return Boom.unauthorized('You are not authorized to access this resource');
+      }
+
       const product = await db.Product.findByPk(product_id);
       if (!product) {
         return Boom.notFound('Product not found');
       }
-      if (decodedToken.role === 'user' && productReview.product_id !== product_id) {
-        return Boom.unauthorized('You are not authorized to access this resource');
-      }
     }
 
     if (order_id) {
+      if (!decodedToken.role === 'admin') {
+        return Boom.unauthorized('You are not authorized to access this resource');
+      }
+
       const order = await db.Order.findByPk(order_id);
       if (!order) {
         return Boom.notFound('Order not found');
-      }
-      if (decodedToken.role === 'user' && order.user_id !== decodedToken.user_id) {
-        return Boom.unauthorized('You are not authorized to access this resource');
       }
       if (order.status !== 'completed') {
         return Boom.badRequest('You can only review products from completed orders');
