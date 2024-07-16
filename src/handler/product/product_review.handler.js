@@ -63,6 +63,9 @@ const createProductReview = async (request, h) => {
     if (!order) {
       return Boom.notFound('Order not found');
     }
+    if (order.status !== 'completed') {
+      return Boom.badRequest('You can only review products from completed orders');
+    }
 
     const product = await db.Product.findByPk(product_id);
     if (!product) {
@@ -97,7 +100,7 @@ const updateProductReview = async (request, h) => {
     const decodedToken = jwtDecode(token);
 
     const { reviewId } = request.params;
-    const { product_id, user_id } = request.payload;
+    const { product_id, order_id } = request.payload;
 
     if (!Object.keys(request.payload).length) {
       return Boom.badRequest('Please provide data to update');
@@ -119,23 +122,28 @@ const updateProductReview = async (request, h) => {
       if (!product) {
         return Boom.notFound('Product not found');
       }
-    }
-
-    if (user_id) {
-      if (decodedToken.role !== 'admin') {
-        return Boom.unauthorized('You are not authorized to access this resource')
-      }
-
-      const user = await db.User.findByPk(user_id);
-      if (!user) {
-        return Boom.notFound('User not found');
+      if (decodedToken.role === 'user' && productReview.product_id !== product_id) {
+        return Boom.unauthorized('You are not authorized to access this resource');
       }
     }
 
-    const updatedProductReview = await productReview.update({
-      ...request.payload,
-      updated_at: new Date().toISOString(),
-    }, { returning: true });
+    if (order_id) {
+      const order = await db.Order.findByPk(order_id);
+      if (!order) {
+        return Boom.notFound('Order not found');
+      }
+      if (decodedToken.role === 'user' && order.user_id !== decodedToken.user_id) {
+        return Boom.unauthorized('You are not authorized to access this resource');
+      }
+      if (order.status !== 'completed') {
+        return Boom.badRequest('You can only review products from completed orders');
+      }
+    }
+
+    const updatedProductReview = await productReview.update(
+      request.payload,
+      { returning: true }
+    );
 
     return h.response({
       message: 'Product Review updated successfully',
