@@ -8,6 +8,7 @@ import ProductDetail from '../views/pages/product-detail';
 import Profile from '../views/pages/profile';
 import Search from '../views/pages/search';
 import Login from '../views/pages/login';
+import Signup from '../views/pages/signup';
 
 const routes = {
   '/': Home,
@@ -20,6 +21,7 @@ const routes = {
   '/cart': Cart,
   '/profile': Profile,
   '/login': Login,
+  '/signup': Signup,
 };
 
 export default routes;
