@@ -1,4 +1,4 @@
-const { Sequelize, DataTypes } = require('sequelize');
+const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
   sequelize.define('OrderItem', {
@@ -26,6 +26,10 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
       allowNull: false
     },
+    note: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
     total_weight: {
       type: DataTypes.FLOAT,
       allowNull: false
@@ -33,16 +37,9 @@ module.exports = (sequelize) => {
     total_price: {
       type: DataTypes.FLOAT,
       allowNull: false
-    },
-    created_at: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: Sequelize.NOW
-    },
-    updated_at: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: Sequelize.NOW
     }
+  },
+  {
+    paranoid: true,
   });
 }

@@ -1,4 +1,4 @@
-const { Sequelize, DataTypes } = require('sequelize');
+const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) =>{
   sequelize.define('Voucher', {
@@ -17,10 +17,6 @@ module.exports = (sequelize) =>{
     code: {
       type: DataTypes.STRING,
       allowNull: false,
-    },
-    discount_type: {
-      type: DataTypes.STRING,
-      allowNull: false
     },
     value: {
       type: DataTypes.FLOAT,
@@ -42,19 +38,12 @@ module.exports = (sequelize) =>{
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: true
-    },
-    created_at: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: Sequelize.NOW
-    },
-    updated_at: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: Sequelize.NOW
     }
   },
   {
     indexes: [{ unique: true, fields: ["code"] }],
+  },
+  {
+    paranoid: true,
   });
 }

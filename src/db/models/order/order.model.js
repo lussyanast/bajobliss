@@ -1,4 +1,4 @@
-const { Sequelize, DataTypes } = require('sequelize');
+const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
   sequelize.define('Order', {
@@ -16,15 +16,12 @@ module.exports = (sequelize) => {
     },
     status: {
       type: DataTypes.STRING,
-      allowNull: false
-    },
-    note: {
-      type: DataTypes.TEXT,
-      allowNull: true
+      allowNull: false,
+      defaultValue: 'pending'
     },
     order_shipment_id: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: 'order_shipments',
         key: 'order_shipment_id'
@@ -48,21 +45,14 @@ module.exports = (sequelize) => {
     },
     payment_id: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: 'payments',
         key: 'payment_id',
       },
     },
-    created_at: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: Sequelize.NOW
-    },
-    updated_at: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: Sequelize.NOW
-    }
+  },
+  {
+    paranoid: true,
   });
 }

@@ -9,7 +9,6 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
   dialect: 'mysql',
   logging: process.env.NODE_ENV === 'development' ? console.log : false,
   define: { 
-    timestamps: false,
     underscored: true
   },
 });

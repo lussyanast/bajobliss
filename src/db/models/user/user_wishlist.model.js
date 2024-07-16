@@ -1,4 +1,4 @@
-const { Sequelize, DataTypes } = require('sequelize');
+const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
   sequelize.define('UserWishlist', {
@@ -22,10 +22,7 @@ module.exports = (sequelize) => {
         key: 'product_id',
       },
     },
-    created_at: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: Sequelize.NOW
-    }
+  }, {
+    paranoid: true,
   });
 }

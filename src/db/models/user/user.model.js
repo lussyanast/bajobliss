@@ -1,4 +1,4 @@
-const { Sequelize, DataTypes } = require('sequelize');
+const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
   sequelize.define('User', {
@@ -30,20 +30,11 @@ module.exports = (sequelize) => {
       type: DataTypes.ENUM('user', 'admin'),
       allowNull: false,
       defaultValue: 'user'
-    },
-    created_at: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: Sequelize.NOW
-    },
-    updated_at: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: Sequelize.NOW
     }
   },
   {
     indexes: [{ unique: true, fields: ["email", "user_phone"] }],
+    paranoid: true,
   }
 );
 }
