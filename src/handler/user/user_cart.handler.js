@@ -59,7 +59,7 @@ const createUserCart = async (request, h) => {
     const token = request.headers.authorization.split(' ')[1];
     const decodedToken = jwtDecode(token);
 
-    let { user_id, product_id, quantity, ...payload } = request.payload;
+    const { user_id, product_id, quantity } = request.payload;
 
     if (user_id && decodedToken.role === 'user' && decodedToken.user_id !== user_id) {
       return Boom.unauthorized('You are not authorized to access this resource');
@@ -71,13 +71,12 @@ const createUserCart = async (request, h) => {
     }
 
     const product = await db.Product.findByPk(product_id);
-
     if (!product) {
       return Boom.notFound('Product not found');
     }
 
     let existingUserCart = await db.UserCart.findOne({
-      where: { user_id, product_id }
+      where: { user_id, product_id, quantity }
     });
     if (existingUserCart) {
       existingUserCart = await existingUserCart.update({
@@ -96,7 +95,8 @@ const createUserCart = async (request, h) => {
     const newUserCart = await db.UserCart.create({
       cart_id: `uc_${nanoid()}`,
       user_id : user_id ? user_id : decodedToken.user_id,
-      ...payload
+      product_id,
+      quantity,
     });
 
     return h.response({

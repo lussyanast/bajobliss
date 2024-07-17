@@ -21,7 +21,7 @@ module.exports = [
   },
   {
     method: 'GET',
-    path: '/order-shipments/{orderShipmentId}',
+    path: '/order-shipments/{id}',
     handler: getOrderShipmentById,
     options: {
       auth: 'jwt',
@@ -39,7 +39,6 @@ module.exports = [
         payload: Joi.object({
           order_id: Joi.string().required(),
           address_id: Joi.string().required(),
-          weight: Joi.number().required(),
           courier: Joi.string().required(),
           tracking_number: Joi.string(),
           cost: Joi.number().required(),
@@ -60,7 +59,6 @@ module.exports = [
         payload: Joi.object({
           order_id: Joi.string(),
           address_id: Joi.string(),
-          weight: Joi.number(),
           courier: Joi.string(),
           tracking_number: Joi.string(),
           cost: Joi.number(),

@@ -21,7 +21,7 @@ module.exports = [
   },
   {
     method: 'GET',
-    path: '/payments/{paymentId}',
+    path: '/payments/{id}',
     handler: getPaymentById,
     options: {
       auth: 'jwt',

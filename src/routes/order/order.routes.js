@@ -21,7 +21,7 @@ module.exports = [
   },
   {
     method: 'GET',
-    path: '/orders/{orderId}',
+    path: '/orders/{id}',
     handler: getOrderById,
     options: {
       auth: 'jwt',
@@ -37,14 +37,22 @@ module.exports = [
       pre: [verifyToken],
       validate: {
         payload: Joi.object({
-          user_id: Joi.string().required(),
-          status: Joi.string().required(),
-          note: Joi.string(),
-          order_shipment_id: Joi.string().required(),
+          user_id: Joi.string(),
+          item: Joi.array().items(Joi.object({
+            product_id: Joi.string().required(),
+            quantity: Joi.number().required(),
+            note: Joi.string(),
+          })).required(),
+          shipment: Joi.object({
+            address_id: Joi.string().required(),
+            courier: Joi.string().required(),
+            cost: Joi.number().required(),
+          }).required(),
           voucher_id: Joi.string(),
-          item_price: Joi.number().required(),
-          total_price: Joi.number().required(),
-          payment_id: Joi.string().required(),
+          payment: {
+            method: Joi.string().required(),
+            merchant_id: Joi.string(),
+          },
         }),
         failAction: (request, h, err) => { throw err }
       },
@@ -60,13 +68,21 @@ module.exports = [
       validate: {
         payload: Joi.object({
           user_id: Joi.string(),
-          status: Joi.string(),
-          note: Joi.string(),
-          order_shipment_id: Joi.string(),
+          item: Joi.array().items(Joi.object({
+            product_id: Joi.string(),
+            quantity: Joi.number(),
+            note: Joi.string(),
+          })),
+          shipment: Joi.object({
+            address_id: Joi.string(),
+            courier: Joi.string(),
+            cost: Joi.number(),
+          }),
           voucher_id: Joi.string(),
-          item_price: Joi.number(),
-          total_price: Joi.number(),
-          payment_id: Joi.string(),
+          payment: {
+            method: Joi.string(),
+            merchant_id: Joi.string(),
+          },
         }),
         failAction: (request, h, err) => { throw err }
       },

@@ -38,12 +38,15 @@ const createVoucher = async (request, h) => {
     const token = request.headers.authorization.split(' ')[1];
     const decodedToken = jwtDecode(token);
 
+    const { start_date, end_date } = request.payload;
+
     if (decodedToken.role !== 'admin') {
       return Boom.unauthorized('You are not authorized to access this resource');
     }
 
     const newVoucher = await db.Voucher.create({
       voucher_id: `v-${nanoid()}`,
+      is_active: start_date <= new Date() && end_date >= new Date(),
       ...request.payload,
     });
 
@@ -63,6 +66,7 @@ const updateVoucher = async (request, h) => {
     const decodedToken = jwtDecode(token);
 
     const { voucherId } = request.params;
+    const { start_date, end_date } = request.payload;
 
     if (decodedToken.role !== 'admin') {
       return Boom.unauthorized('You are not authorized to access this resource');
@@ -77,9 +81,22 @@ const updateVoucher = async (request, h) => {
       return Boom.notFound('Voucher not found');
     }
 
+    let isActive;
+    if (start_date && end_date) {
+      isActive = start_date <= new Date() && end_date >= new Date();
+    } 
+    if (start_date) {
+      isActive = start_date <= new Date() && voucher.end_date >= new Date();
+    } 
+    if (end_date) {
+      isActive = voucher.start_date <= new Date() && end_date >= new Date();
+    }
+
     const updatedVoucher = await voucher.update(
-      request.payload,
-      { returning: true }
+      {
+        is_active: isActive,
+        ...request.payload,
+      }, { returning: true }
     );
 
     return h.response({

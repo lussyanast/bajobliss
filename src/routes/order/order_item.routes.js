@@ -21,7 +21,7 @@ module.exports = [
   },
   {
     method: 'GET',
-    path: '/order-items/{orderItemId}',
+    path: '/order-items/{id}',
     handler: getOrderItemById,
     options: {
       auth: 'jwt',
@@ -40,8 +40,6 @@ module.exports = [
           order_id: Joi.string().required(),
           product_id: Joi.string().required(),
           quantity: Joi.number().required(),
-          total_weight: Joi.number().required(),
-          total_price: Joi.number().required(),
         }),
         failAction: (request, h, err) => { throw err }
       },
@@ -59,8 +57,6 @@ module.exports = [
           order_id: Joi.string(),
           product_id: Joi.string(),
           quantity: Joi.number(),
-          total_weight: Joi.number(),
-          total_price: Joi.number(),
         }),
         failAction: (request, h, err) => { throw err }
       },
