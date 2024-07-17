@@ -46,7 +46,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"identifier\":\"test\",\r\n    \"password\":\"12345678\"\r\n}",
+							"raw": "{\r\n    \"identifier\":\"admin\",\r\n    \"password\":\"adminbajo\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -452,6 +452,15 @@
 					"request": {
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_id\": \"tesst\",\r\n    \"user_name\": \"Testing\",\r\n    \"address_type\": \"Home\",\r\n    \"address_line_1\": \"Perum Pondok Test Blok T3/57\",\r\n    \"zip_code\": \"73575\",\r\n    \"city\": \"Test\",\r\n    \"country\": \"Test\",\r\n    \"address_phone\": \"+6281311223344\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "{{bajobliss_base_url}}/user-addresses",
 							"host": [
@@ -459,6 +468,13 @@
 							],
 							"path": [
 								"user-addresses"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
 							]
 						},
 						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
@@ -1138,59 +1154,6 @@
 					"response": []
 				},
 				{
-					"name": "Display Products Pictures by ID",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{bajobliss_base_url}}/product/:id/picture",
-							"host": [
-								"{{bajobliss_base_url}}"
-							],
-							"path": [
-								"product",
-								":id",
-								"picture"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": ""
-								}
-							]
-						},
-						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
-					},
-					"response": []
-				},
-				{
 					"name": "Add a New Product",
 					"event": [
 						{
@@ -1675,59 +1638,6 @@
 					"response": []
 				},
 				{
-					"name": "Display Products Review Pictures by ID",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{bajobliss_base_url}}/product-reviews/:id/picture",
-							"host": [
-								"{{bajobliss_base_url}}"
-							],
-							"path": [
-								"product-reviews",
-								":id",
-								"picture"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": ""
-								}
-							]
-						},
-						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
-					},
-					"response": []
-				},
-				{
 					"name": "Add a New Product Review",
 					"event": [
 						{
@@ -1992,6 +1902,15 @@
 					"request": {
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_id\": \"test\",\r\n    \"item\": [\r\n        {\r\n            \"product_id\": \"product_385d43a9e2\",\r\n            \"quantity\": 2,\r\n            \"note\": \"hi\"\r\n        },\r\n        {\r\n            \"product_id\": \"product_1d6fbc2042\",\r\n            \"quantity\": 5\r\n        }\r\n    ],\r\n    \"shipment\": {\r\n        \"address_id\": \"ua-c952876050\",\r\n        \"courier\": \"JNE\",\r\n        \"cost\": 15000\r\n    },\r\n    \"payment\": {\r\n        \"method\": \"GOPAY\"\r\n    },\r\n    \"voucher_id\": \"v-eeeec3eff6\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "{{bajobliss_base_url}}/orders",
 							"host": [
@@ -3178,6 +3097,15 @@
 					"request": {
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Gratis Ongkir\",\r\n    \"description\": \"Ya ini voucher gratis ongkir... apalagi yg perlu dijelaskan\",\r\n    \"code\": \"GRATISONGKIR\",\r\n    \"value\": \"100\",\r\n    \"target\": \"shipment\",\r\n    \"start_date\": \"07-17-2024\",\r\n    \"end_date\": \"08-17-2024\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "{{bajobliss_base_url}}/vouchers",
 							"host": [
@@ -3331,6 +3259,12 @@
 		{
 			"key": "token",
 			"value": ""
+		},
+		{
+			"key": "bajobliss_base_url",
+			"value": "",
+			"type": "string",
+			"disabled": true
 		}
 	]
 }
