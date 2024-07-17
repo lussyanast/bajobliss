@@ -42,7 +42,6 @@ const NewIn = {
                     <p class="product-stock">Stock: ${product.stock || 'N/A'}</p>
                   </div>
                   <div class="product-rating">
-                    <span class="rating-stars">⭐⭐⭐⭐⭐</span>
                     <span class="rating-count">(${product.reviewsCount || 0} reviews)</span>
                   </div>
                 </div>

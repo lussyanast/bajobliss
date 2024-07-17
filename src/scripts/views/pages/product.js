@@ -68,7 +68,6 @@ const Product = {
                     <p class="product-stock">Stock: ${product.stock || 'N/A'}</p>
                   </div>
                   <div class="product-rating">
-                    <span class="rating-stars">${'⭐'.repeat(product.rating)}</span>
                     <span class="rating-count">(${product.reviewsCount || 0} reviews)</span>
                   </div>
                 </div>

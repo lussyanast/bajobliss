@@ -62,7 +62,7 @@ h4 {
 /* Main */
 .main-content {
     flex: 1;
-    padding: 60px 20px 20px 20px;
+    padding: 80px 20px 60px 20px;
 }
 
 /* Jumbotron */
@@ -411,7 +411,7 @@ footer {
 .product-section {
     text-align: center;
     padding: 40px 20px;
-    background-color: #f0f0f0;
+    
     flex: 1;
 }
 
@@ -425,6 +425,7 @@ footer {
 .product-title {
     font-size: 24px;
     color: #333;
+    margin-top: 50px;
 }
 
 .filter-button, .page-button, .actions button, .customer-reviews button {
@@ -439,8 +440,8 @@ footer {
 
 .product-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsif */
+    gap: 30px;
 }
 
 .product-item {
@@ -663,9 +664,24 @@ footer {
     cursor: pointer;
 }
 
-.signup-link {
+.signup-container {
     text-align: center;
-    margin-top: 20px;
+    margin-bottom: 200px;
+    width: 100%;
+}
+
+.signup-text {
+    color: #000000;
+}
+
+.signup-link {
+    color: #0077B6;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.signup-link:hover {
+    text-decoration: underline;
 }
 
 /* Signup Page */

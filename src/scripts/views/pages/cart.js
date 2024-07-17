@@ -21,7 +21,6 @@ const Cart = {
                   <p class="product-stock">Stock: xxx</p>
                 </div>
                 <div class="product-rating">
-                  <span class="rating-stars">⭐⭐⭐⭐⭐</span>
                   <span class="rating-count">(xx reviews)</span>
                 </div>
               </div>
@@ -29,14 +28,6 @@ const Cart = {
           `).join('')}
         </div>
       </section>
-      <div class="pagination">
-        <button class="page-button">1</button>
-        <button class="page-button">2</button>
-        <button class="page-button">3</button>
-        <button class="page-button">4</button>
-        <button class="page-button">5</button>
-        <button class="page-button">></button>
-      </div>
     </div>
     `;
   },

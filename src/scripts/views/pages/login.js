@@ -19,9 +19,12 @@ const Login = {
               <a href="#" class="forgot-password">Forgot your password?</a>
             </div>
             <button type="submit" class="login-btn">Log In</button>
-            <p class="signup-link">Or <a href="#/create-account">Create Account</a></p>
           </form>
         </div>
+        <div class="signup-container">
+            <p class="signup-text">Don't have an account?</p>
+            <a href="#/signup" class="signup-link">Create Account</a>
+          </div>
       </div>
     `;
   },
