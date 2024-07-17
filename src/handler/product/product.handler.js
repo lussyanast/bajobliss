@@ -1,4 +1,4 @@
-const { Op } = require('sequelize');
+const { Op, Sequelize } = require('sequelize');
 const Boom = require('@hapi/boom');
 const { jwtDecode } = require('jwt-decode')
 
@@ -10,7 +10,28 @@ const db = sequelize.models
 
 const getProduct = async (request, h) => {
   try {
+    const { name, priceMin, priceMax } = request.query;
+
+    const whereConditions = {};
+    if (name) {
+      whereConditions.name = {
+        [Sequelize.Op.like]: `%${name}%`,
+      };
+    }
+    if (priceMin) {
+      whereConditions.price = {
+        [Sequelize.Op.gte]: priceMin,
+      };
+    }
+    if (priceMax) {
+      if (!whereConditions.price) {
+        whereConditions.price = {};
+      }
+      whereConditions.price[Sequelize.Op.lte] = priceMax;
+    }
+
     const products = await db.Product.findAll({
+      where: whereConditions,
       include: [
         {
           model: db.ProductPicture,
@@ -22,7 +43,7 @@ const getProduct = async (request, h) => {
     return h.response(products).code(200);
   } catch (error) {
     console.log('Error during get products:', error);
-    return Boom.badImplementation('Internal server error')
+    return Boom.badImplementation('Internal server error');
   }
 };
 
