@@ -29,7 +29,7 @@
             <ul>
                 <li><a href="#/search"><i class="fas fa-search"></i></a></li>
                 <li><a href="#/cart"><i class="fas fa-shopping-cart"></i></a></li>
-                <li><a href="#/profile"><i class="fas fa-user"></i></a></li>
+                <li><a href="#" id="profileLink"><i class="fas fa-user"></i></a></li>
             </ul>
         </nav>
     </header>
@@ -58,5 +58,22 @@
         <p class="credit">©️2024, BajoBliss</p>
     </footer>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const profileLink = document.getElementById('profileLink');
+
+            profileLink.addEventListener('click', (event) => {
+                event.preventDefault();
+
+                const isLoggedIn = localStorage.getItem('isLoggedIn');
+
+                if (isLoggedIn === 'true') {
+                    window.location.href = '#/profile';
+                } else {
+                    window.location.href = '#/login';
+                }
+            });
+        });
+    </script>
 </body>
 </html>

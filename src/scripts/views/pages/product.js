@@ -1,5 +1,43 @@
+import { productAPI, productCategoryAPI } from '../../data/route.api';
+
 const Product = {
   async render() {
+    let products = [];
+    let categories = [];
+    const urlParams = new URLSearchParams(window.location.search);
+    const categoryId = urlParams.get('category');
+
+    const rupiah = (value) => {
+      const numberFormat = new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        minimumFractionDigits: 0,
+      });
+
+      return numberFormat.format(value);
+    };
+
+    try {
+      // Fetch categories for the filter
+      const categoryResponse = await productCategoryAPI.getCategories();
+      categories = categoryResponse.data;
+
+      // Fetch products based on category
+      if (categoryId && categoryId !== 'all') {
+        const response = await productAPI.getProductsByCategory(categoryId);
+        products = response.data;
+      } else {
+        const response = await productAPI.getProducts();
+        products = response.data;
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+
+    const categoryOptions = categories.map(category => `
+      <option value="${category.id}" ${category.id == categoryId ? 'selected' : ''}>${category.name}</option>
+    `).join('');
+
     return `
       <div class="product-content">
         <section class="featured-product">
@@ -10,46 +48,48 @@ const Product = {
         </section>
         <section class="product-section">
           <div class="product-header">
-            <h2 class="product-title">Product (xx)</h2>
-            <button class="filter-button">Filter</button>
+            <h2 class="product-title">Product (${products.length})</h2>
+            <select id="categoryFilter" class="filter-button">
+              <option value="all">All Categories</option>
+              ${categoryOptions}
+            </select>
           </div>
-          <div class="product-grid">
-            ${Array(9).fill(`
+          <div class="product-grid" id="productGrid">
+            ${products.map((product) => `
               <div class="product-item">
                 <div class="product-image">
-                  <i class="fa fa-picture-o" aria-hidden="true"></i>
+                  <img src="${product.pictures[0]?.picture || 'default-image-url'}" alt="${product.name}">
                 </div>
                 <div class="product-info">
-                  <p class="product-text">Lorem ipsum</p>
-                  <p class="product-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin sollicitudin vel ligula quis tristique.</p>
+                  <p class="product-text">${product.name}</p>
+                  <p class="product-description">${product.description}</p>
                   <div class="product-price-stock">
-                    <p class="product-price">Rp. xxx.xxx,-</p>
-                    <p class="product-stock">Stock: xxx</p>
+                    <p class="product-price">${rupiah(product.price)}</p>
+                    <p class="product-stock">Stock: ${product.stock || 'N/A'}</p>
                   </div>
                   <div class="product-rating">
-                    <span class="rating-stars">⭐⭐⭐⭐⭐</span>
-                    <span class="rating-count">(xx reviews)</span>
+                    <span class="rating-stars">${'⭐'.repeat(product.rating)}</span>
+                    <span class="rating-count">(${product.reviewsCount || 0} reviews)</span>
                   </div>
                 </div>
               </div>
             `).join('')}
           </div>
         </section>
-        <div class="pagination">
-          <button class="page-button">1</button>
-          <button class="page-button">2</button>
-          <button class="page-button">3</button>
-          <button class="page-button">4</button>
-          <button class="page-button">5</button>
-          <button class="page-button">></button>
-        </div>
       </div>
     `;
   },
 
   async afterRender() {
+    const categoryFilter = document.getElementById('categoryFilter');
     const productItems = document.querySelectorAll('.product-item');
-    productItems.forEach(item => {
+
+    categoryFilter.addEventListener('change', () => {
+      const selectedCategory = categoryFilter.value;
+      window.location.href = `#/products?category=${selectedCategory}`;
+    });
+
+    productItems.forEach((item) => {
       item.addEventListener('click', () => {
         window.location.href = '#/product-detail';
       });
