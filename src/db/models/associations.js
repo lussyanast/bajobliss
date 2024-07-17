@@ -77,17 +77,17 @@ function associations(sequelize) {
   Order.hasOne(ProductReview, { foreignKey: 'order_id', as: 'review' });
   ProductReview.belongsTo(Order, { foreignKey: 'order_id', onDelete: 'SET NULL' });  
 
-  // One-to-one: Order has one voucher
-  Order.hasOne(Voucher, { foreignKey: 'voucher_id' });
-  Voucher.belongsTo(Order, { foreignKey: 'voucher_id', onDelete: 'SET NULL' });
+  // Many-to-one: Order belongs to one voucher
+  Order.belongsTo(Voucher, { foreignKey: 'voucher_id', as: 'voucher', onDelete: 'SET NULL' });
+  Voucher.hasMany(Order, { foreignKey: 'voucher_id', as: 'orders' });
 
   // One-to-one: Order has one order shipment
   Order.hasOne(OrderShipment, { foreignKey: 'order_id', as: 'shipment' });
   OrderShipment.belongsTo(Order, { foreignKey: 'order_id', onDelete: 'SET NULL' });
 
   // One-to-one: Order has one payment
-  Order.hasOne(Payment, { foreignKey: 'payment_id', as: 'payment'});
-  Payment.belongsTo(Order, { foreignKey: 'payment_id', onDelete: 'SET NULL' });
+  Order.hasOne(Payment, { foreignKey: 'order_id', as: 'payment'});
+  Payment.belongsTo(Order, { foreignKey: 'order_id', onDelete: 'SET NULL' });
 
   // Many-to-one: Order item belongs to one product
   OrderItem.belongsTo(Product, { foreignKey: 'product_id', onDelete: 'SET NULL' });
@@ -97,9 +97,9 @@ function associations(sequelize) {
   OrderShipment.hasOne(UserAddress, { foreignKey: 'address_id' });
   UserAddress.belongsTo(OrderShipment, { foreignKey: 'address_id', onDelete: 'SET NULL' });
 
-  // One-to-one: Order shipment has one voucher
-  OrderShipment.hasOne(Voucher, { foreignKey: 'voucher_id' });
-  Voucher.belongsTo(OrderShipment, { foreignKey: 'voucher_id', onDelete: 'SET NULL' });
+// One-to-one: OrderShipment belongs to one voucher
+  OrderShipment.belongsTo(Voucher, { foreignKey: 'voucher_id', as: 'voucher', onDelete: 'SET NULL' });
+  Voucher.hasMany(OrderShipment, { foreignKey: 'voucher_id', as: 'shipments' });
 }
 
 module.exports = associations;
