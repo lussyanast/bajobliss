@@ -31,6 +31,8 @@ const ProductDetail = {
       reviews,
     } = products[0];
 
+    console.log(products[0]); // Tambahkan ini untuk memastikan data diterima
+
     return `
       <div class="product-detail">
         <div class="product-header">
@@ -46,9 +48,11 @@ const ProductDetail = {
             </nav>
             <h1>${name || 'Product Name'}</h1>
             <p class="price">${price ? this.formatRupiah(price) : 'Rp 0'}</p>
+            <p class="stock">Stock: ${stock || 'N/A'}</p>
+            <p class="weight">Weight: ${weight ? weight + ' gr' : 'N/A'}</p>
             <div class="variants">
               <h3>Variant</h3>
-              ${variants?.length > 0 ? product.variants.map((variant) => `<button class="variant-button">${variant}</button>`).join('') : 'No variants available'}
+              ${variants?.length > 0 ? variants.map((variant) => `<button class="variant-button">${variant}</button>`).join('') : 'No variants available'}
             </div>
             <div class="quantity">
               <h3>Quantity</h3>
