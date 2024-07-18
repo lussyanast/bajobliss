@@ -9,6 +9,7 @@ import Profile from '../views/pages/profile';
 import Search from '../views/pages/search';
 import Login from '../views/pages/login';
 import Signup from '../views/pages/signup';
+import Review from '../views/pages/review';
 
 const routes = {
   '/': Home,
@@ -22,6 +23,7 @@ const routes = {
   '/profile': Profile,
   '/login': Login,
   '/signup': Signup,
+  '/review': Review,
 };
 
 export default routes;
