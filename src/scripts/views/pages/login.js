@@ -1,9 +1,13 @@
 /* eslint-disable camelcase */
-import { setCookie } from '../../utils/cookie-helper';
+import { setCookie, getCookie } from '../../utils/cookie-helper';
 import { authAPI } from '../../data/route.api';
 
 const Login = {
   async render() {
+    const jwt = getCookie('jwt');
+    if (jwt) {
+      window.location.href = '#/profile';
+    }
     return `
       <div class="login-page">
         <h2>LOG IN</h2>

@@ -1,6 +1,9 @@
+/* eslint-disable camelcase */
 import { getUserId } from '../../utils/decode-token';
 import { getCookie, eraseCookie } from '../../utils/cookie-helper';
 import { userAPI } from '../../data/route.api';
+
+let profilePic = 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541';
 
 const Profile = {
   async render() {
@@ -18,8 +21,13 @@ const Profile = {
       name,
       email,
       user_phone: phone,
-      profile_pic: profilePic,
+      profile_pic,
     } = userData;
+
+    if (profile_pic) {
+      profilePic = profile_pic;
+    }
+
     return `
       <div class="content">
         <div class="profile-content">
@@ -34,18 +42,7 @@ const Profile = {
                 <p>User ID: ${userId}</p>
                 <p>Email: ${email}</p>
                 <p>Phone: ${phone}</p>
-                <p><s>Gender: Perempuan</s></p>
                 <br />
-                <div class="address">
-                  <s>
-                    <h3>Alamat</h3>
-                    <p>Jl. Coklat IX xx, rw xx</p>
-                    <p>Kode Pos</p>
-                    <p>Kota Jakarta</p>
-                    <p>Provinsi Jawa Barat</p>
-                    <p>Indonesia</p>
-                  </s>
-                </div>
                 <button class="edit-profile-btn">Edit Profile</button>
               </div>
             </div>
@@ -64,7 +61,8 @@ const Profile = {
           <form class="edit-profile-form">
             <div class="form-group">
               <div class="profile-image">
-                <img src="" alt="Profile Image">
+                <img src=${profilePic}' alt="Profile Image">
+                <br />
                 <button type="button" class="upload-photo-btn">Upload Photo</button>
               </div>
             </div>
@@ -77,35 +75,8 @@ const Profile = {
               <input type="email" id="email" name="email" class="form-control">
             </div>
             <div class="form-group">
-              <label for="phone">No. Telp</label>
+              <label for="phone">Nomor Telepon</label>
               <input type="text" id="phone" name="phone" class="form-control">
-            </div>
-            <div class="form-group">
-              <label for="gender">Jenis kelamin (Optional)</label>
-              <select id="gender" name="gender" class="form-control">
-                <option value="male">Laki-laki</option>
-                <option value="female">Perempuan</option>
-                <option value="other">Lainnya</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="address">Alamat</label>
-              <textarea id="address" name="address" class="form-control"></textarea>
-            </div>
-            <div class="form-group">
-              <label for="postal-code">Kode Pos</label>
-              <input type="text" id="postal-code" name="postal-code" class="form-control">
-            </div>
-            <div class="form-group">
-              <label for="city">Kota</label>
-              <input type="text" id="city" name="city" class="form-control">
-            </div>
-            <div class="form-group">
-              <label for="country">Negara</label>
-              <select id="country" name="country" class="form-control">
-                <option value="indonesia">Indonesia</option>
-                <option value="other">Lainnya</option>
-              </select>
             </div>
             <button type="submit" class="submit-btn">Submit</button>
           </form>
@@ -144,7 +115,13 @@ const Profile = {
       logoutBtn.addEventListener('click', (event) => {
         event.preventDefault();
 
-        eraseCookie('jwt');
+        if (confirm('Are you sure you want to log out?')) {
+          if (getCookie('jwt')) {
+            eraseCookie('jwt');
+            profilePic = 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541';
+          }
+          window.location.href = '#/login';
+        }
 
         const jwt = getCookie('jwt');
         if (!jwt) {

@@ -17,7 +17,7 @@ const Category = {
           <div class="category-item">
             <div class="category-image">
               <i class="fa fa-picture-o" aria-hidden="true"></i>
-              <img src="https://via.placeholder.com/150" alt="Category Image">
+              <img src="https://img.icons8.com/?size=100&id=12560&format=png&color=000000" alt="Category Image">
             </div>
             <p class="category-text">All Categories</p>
           </div>

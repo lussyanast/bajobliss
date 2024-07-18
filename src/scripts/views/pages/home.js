@@ -1,6 +1,8 @@
 import Category from './category';
 import NewIn from './new-in';
+
 import { feedbackAPI } from '../../data/route.api';
+import { getUserId } from '../../utils/decode-token';
 
 const Home = {
   async render() {
@@ -39,23 +41,36 @@ const Home = {
   },
 
   renderFeedback() {
+    const userId = getUserId();
+    console.log(userId);
+
+    let disabled = '';
+    let name = '';
+    let msg = '';
+
+    if (!userId) {
+      name = '-';
+      msg = 'Please login to give feedback';
+      disabled = 'disabled';
+    } else {
+      name = userId;
+      msg = '';
+      disabled = 'required';
+    }
+
     return `
       <section class="feedback">
         <h2>Feedback</h2>
         <form class="feedback-form" id="feedback-form">
           <div class="form-group">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required>
-          </div>
-          <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
+            <label for="name">User ID:</label>
+            <input type="text" id="name" name="name" value=${name} disabled>
           </div>
           <div class="form-group">
             <label for="message">Message:</label>
-            <textarea id="message" name="message" rows="4" required></textarea>
+            <textarea id="message" name="message" rows="4" ${disabled}>${msg}</textarea>
           </div>
-          <button type="submit" class="submit-btn">Submit</button>
+          <button type="submit" class="submit-btn" ${disabled}>Submit</button>
         </form>
       </section>
     `;
@@ -76,17 +91,17 @@ const Home = {
     const handleFormSubmit = async (event) => {
       event.preventDefault();
 
-      const name = document.getElementById('name').value;
-      const email = document.getElementById('email').value;
       const message = document.getElementById('message').value;
-
-      const feedbackData = { name, email, message };
-
       try {
-        await feedbackAPI.createFeedback(feedbackData);
-        alert('Feedback submitted successfully!');
+        const feedback = await feedbackAPI.createFeedback({ message });
+        alert(feedback.data.message);
         document.getElementById('feedback-form').reset();
       } catch (error) {
+        if (error.response) {
+          alert(error.response.data.message);
+          return;
+        }
+
         alert('Failed to submit feedback. Please try again.');
         console.error(error);
       }
