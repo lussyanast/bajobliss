@@ -1,12 +1,12 @@
 {
-    "id": "movie-catalogue-lite-pwa-1",
+    "id": "bajobliss",
     "start_url": "./index.html",
-    "name": "Movie Catalogue Lite",
-    "short_name": "Movie Lite",
-    "description": "Free Catalogue Movie for you",
+    "name": "BajoBliss",
+    "short_name": "BajoBliss",
+    "description": "Pengembangan Website Jual Beli Produk Khas Labuan Bajo",
     "display": "standalone",
-    "background_color": "#FFFFFF",
-    "theme_color": "#D84315",
+    "background_color": "#6E94BC",
+    "theme_color": "#6E94BC",
     "screenshots": [
         {
             "src": "labuan-bajo.jpg",
