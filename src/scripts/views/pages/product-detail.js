@@ -71,7 +71,9 @@ const ProductDetail = {
         </div>
         <div class="customer-reviews">
           <h2>Customer Reviews</h2>
-          <button>WRITE YOUR REVIEW</button>
+          <a href="#/review" class="review-link">
+            <button class="review-button">WRITE YOUR REVIEW</button>
+          </a>
         </div>
       </div>
     `;
