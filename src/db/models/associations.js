@@ -54,7 +54,7 @@ function associations(sequelize) {
   OrderShipment.belongsTo(Order, { foreignKey: 'order_id', onDelete: 'SET NULL' });
 
   // Many-to-one: Product belongs to one product category
-  Product.belongsTo(ProductCategory, { foreignKey: 'category_id', onDelete: 'SET NULL' });
+  Product.belongsTo(ProductCategory, { foreignKey: 'category_id', onDelete: 'SET NULL', as: 'category' });
   ProductCategory.hasMany(Product, { foreignKey: 'category_id', as: 'products' });
 
   // Many-to-one: Product picture belongs to one product

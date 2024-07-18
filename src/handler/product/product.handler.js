@@ -62,8 +62,15 @@ const getProductById = async (request, h) => {
         {
           model: db.ProductPicture,
           as: 'pictures',
+          attributes: ['product_picture_id', 'picture'],
         },
+        {
+          model: db.ProductCategory,
+          as: 'category',
+          attributes: ['category_id', 'name'],
+        }
       ],
+      attributes: { exclude: ['category_id', 'deleted_at'] }
     });
     
     if (!product) {
