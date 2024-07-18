@@ -9,11 +9,15 @@ BajoBliss merupakan sebuah aplikasi berbasis website yang mendukung UMKM di Labu
 ![image](https://github.com/user-attachments/assets/78202db1-9412-482f-9be1-cdf0ac1ec0e6)
 
 # Features
+- Signup : mendaftarkan akun agar dapat leluasa mengakses website dan dapat melakukan transaksi
+- Login : mendapat akses website yang lebih leluasa serta dapat melakukan transaksi
 - Home : menampilkan halaman utama dari website, halaman utama ini menampilkan fitur-fitur secara ringkas
 - New In : menampilkan product terbaru
 - Category : menyaring product sesuai kategori
 - Feedback : pengguna dapat memberikan ulasan mengenai user experience selama menggunakan website
 - FAQ : menampilkan pertanyaan yang mungkin sering dipertanyakan oleh user
+- Profile : menampilkan dan mengedit data pribadi
+- Fitur lainnya SOON dikarenakan keterbatasan waktu dan masing-masing kegiatan para pengembang
 
 # Links
 - UI/UX Brainstorming : https://www.figma.com/board/7X5WAS4JSqi7qKMObu1RgF/BajoBliss-UI%2FUX?node-id=0-1&t=r8tLxVDqKmMqvbEZ-0
