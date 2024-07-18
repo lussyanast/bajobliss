@@ -65,9 +65,11 @@ const createUserCart = async (request, h) => {
       return Boom.unauthorized('You are not authorized to access this resource');
     }
 
-    const user = await db.User.findByPk(user_id);
-    if (!user) {
-      return Boom.notFound('User not found');
+    if (user_id) {
+      const user = await db.User.findByPk(user_id);
+      if (!user) {
+        return Boom.notFound('User not found');
+      }
     }
 
     const product = await db.Product.findByPk(product_id);
@@ -76,7 +78,11 @@ const createUserCart = async (request, h) => {
     }
 
     let existingUserCart = await db.UserCart.findOne({
-      where: { user_id, product_id, quantity }
+      where: { 
+        user_id: user_id ? user_id : decodedToken.user_id,
+        product_id,
+        quantity
+      }
     });
     if (existingUserCart) {
       existingUserCart = await existingUserCart.update({
@@ -91,6 +97,7 @@ const createUserCart = async (request, h) => {
     if (quantity > product.stock) {
       return Boom.badRequest('Quantity exceeds the available stock');
     }
+
     
     const newUserCart = await db.UserCart.create({
       cart_id: `uc_${nanoid()}`,

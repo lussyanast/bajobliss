@@ -65,9 +65,11 @@ const createUserAddress = async (request, h) => {
       return Boom.unauthorized('You are not authorized to access this resource');
     }
 
-    const user = await db.User.findByPk(user_id);
-    if (!user) {
-      return Boom.notFound('User not found');
+    if (user_id) {
+      const user = await db.User.findByPk(user_id);
+      if (!user) {
+        return Boom.notFound('User not found');
+      }
     }
 
     const newUserAddress = await db.UserAddress.create({

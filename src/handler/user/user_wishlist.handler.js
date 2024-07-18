@@ -66,9 +66,11 @@ const createUserWishlist = async (request, h) => {
       return Boom.unauthorized('You are not authorized to access this resource');
     }
 
-    const user = await db.User.findByPk(user_id);
-    if (!user) {
-      return Boom.notFound('User not found');
+    if (user_id) {
+      const user = await db.User.findByPk(user_id);
+      if (!user) {
+        return Boom.notFound('User not found');
+      }
     }
 
     const product = await db.Product.findByPk(product_id);
@@ -77,7 +79,10 @@ const createUserWishlist = async (request, h) => {
     }
 
     const existingUserWishlist = await db.UserWishlist.findOne({
-      where: { user_id, product_id }
+      where: { 
+        user_id: user_id ? user_id : decodedToken.user_id,
+        product_id,
+      }
     });
     if (existingUserWishlist) {
       return Boom.conflict('User Wishlist already exists');
