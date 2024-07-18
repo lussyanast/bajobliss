@@ -158,9 +158,61 @@ h4 {
 
 /* Feedback */
 .feedback {
-    position: fixed;
-    bottom: 0;
-    right: 0;
+    padding: 10px;
+    background-color: #E3E9EF;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.feedback h2 {
+    text-align: center;
+    color: #0077B6;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.feedback-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.form-group label {
+    color: #333;
+    font-size: 14px;
+}
+
+.form-group input,
+.form-group textarea {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.submit-btn {
+    align-self: center;
+    padding: 8px 16px;
+    background-color: #0077B6;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.submit-btn:hover {
+    background-color: #005f99;
 }
 
 /* Footer */
