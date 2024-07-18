@@ -34,6 +34,7 @@ export const userCartAPI = {
 
 export const productAPI = {
   getProducts: () => api.get('/products'),
+  searchProducts: (query) => api.get(`/products?name=${query}`),
   createProduct: (productData) => api.post('/products', productData),
   getProduct: (id) => api.get(`/products/${id}`),
   updateProduct: (productId, productData) => api.put(`/products/${productId}`, productData),
@@ -54,7 +55,6 @@ export const productReviewAPI = {
   createReview: (reviewData) => api.post('/product-reviews', reviewData),
   updateReview: (reviewId, reviewData) => api.put(`/product-reviews/${reviewId}`, reviewData),
   deleteReview: (reviewId) => api.delete(`/product-reviews/${reviewId}`),
-  getReviewPicture: (reviewId) => api.get(`/product-reviews/${reviewId}/picture`),
 };
 
 export const authAPI = {
