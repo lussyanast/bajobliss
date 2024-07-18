@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  sequelize.define('ProductReviewImage', {
+  sequelize.define('ProductReviewPicture', {
     review_picture_id: {
       type: DataTypes.STRING,
       primaryKey: true

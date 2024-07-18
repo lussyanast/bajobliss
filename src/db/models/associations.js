@@ -8,7 +8,7 @@ function associations(sequelize) {
     ProductCategory,
     ProductReview,
     ProductPicture,
-    ProductReviewImage,
+    ProductReviewPicture,
     Product,
     UserAddress,
     UserCart,
@@ -66,8 +66,8 @@ function associations(sequelize) {
   ProductReview.belongsTo(Product, { foreignKey: 'product_id', onDelete: 'CASCADE' });
 
   // Many-to-one: Product review picture belongs to one product review
-  ProductReviewImage.belongsTo(ProductReview, { foreignKey: 'product_review_id', onDelete: 'CASCADE' });
-  ProductReview.hasMany(ProductReviewImage, { foreignKey: 'product_review_id', as: 'pictures' });
+  ProductReviewPicture.belongsTo(ProductReview, { foreignKey: 'product_review_id', onDelete: 'CASCADE' });
+  ProductReview.hasMany(ProductReviewPicture, { foreignKey: 'product_review_id', as: 'pictures' });
 
   // One-to-many: Order has many order items
   Order.hasMany(OrderItem, { foreignKey: 'order_id', as: 'items' });

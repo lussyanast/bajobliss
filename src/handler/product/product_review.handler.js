@@ -26,9 +26,9 @@ const getProductReviewById = async (request, h) => {
     const productReview = await db.ProductReview.findAll({
       where: {
         [Op.or]: [
-          { wishlist_id: id },
+          { review_id: id },
           { product_id: id },
-          { user_id: id }
+          { order_id: id }
         ]
       },
       include: [
