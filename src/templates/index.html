@@ -13,67 +13,8 @@
     <title>Bajobliss</title>
 </head>
 <body>
-    <header>
-        <div class="app-name">
-            <h1>BajoBliss</h1>
-        </div>
-        <nav class="nav-web">
-            <ul>
-                <li><a href="#/">Home</a></li>
-                <li><a href="#/new">New</a></li>
-                <li><a href="#/category">Categories</a></li>
-                <li><a href="#/faq">FAQ</a></li>
-            </ul>  
-        </nav>
-        <nav class="nav-user">
-            <ul>
-                <li><a href="#/search"><i class="fas fa-search"></i></a></li>
-                <li><a href="#/cart"><i class="fas fa-shopping-cart"></i></a></li>
-                <li><a href="#" id="profileLink"><i class="fas fa-user"></i></a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <main id="mainContent"></main>
-
-    <footer>
-        <div class="foo-bar">
-            <div class="foo-name">
-                <h1>BajoBliss</h1>
-                <a>info@bajobliss.com</a>
-            </div>
-            <div class="foo-web">
-                <h4>BajoBliss</h4>
-                <a href="#/new">New</a>
-                <a href="#/category">Categories</a>
-                <a href="#/faq">FAQ</a>
-            </div>
-            <div class="foo-bajo">
-                <h4>Follow Us</h4>
-                <a href="#"><i class="fab fa-instagram"></i> bajobliss.id</a>
-                <a href="#"><i class="fab fa-twitter"></i> bajoblissid</a>
-                <a href="#"><i class="fab fa-facebook"></i> BajoBliss</a>
-            </div>
-        </div>
-        <p class="credit">©️2024, BajoBliss</p>
-    </footer>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            const profileLink = document.getElementById('profileLink');
-
-            profileLink.addEventListener('click', (event) => {
-                event.preventDefault();
-
-                const isLoggedIn = localStorage.getItem('isLoggedIn');
-
-                if (isLoggedIn === 'true') {
-                    window.location.href = '#/profile';
-                } else {
-                    window.location.href = '#/login';
-                }
-            });
-        });
-    </script>
+  <menu-bar></menu-bar>
+  <main id="mainContent"></main>
+  <my-footer></my-footer>
 </body>
 </html>
