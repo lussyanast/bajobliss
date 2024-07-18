@@ -1,6 +1,11 @@
 # BajoBliss
 BajoBliss merupakan sebuah aplikasi berbasis website yang mendukung UMKM di Labuan Bajo dengan mempromosikan produk lokal kepada wisatawan. BajoBliss menawarkan fitur interaktif untuk memudahkan wisatawan global membeli produk khas Labuan Bajo, dan mendukung UMKM lokal.
 
+# Branches
+- Main : untuk keperluan dokumentasi
+- Dev : untuk keperluan pengembangan secara keseluruhan
+- Server : untuk keperluan pengelolaan Back-End
+
 # Screenshots
 ![image](https://github.com/user-attachments/assets/adb5110b-efdd-4058-86ba-8bb160f35cdf)
 ![image](https://github.com/user-attachments/assets/dc088202-6cd6-41c7-854a-f36f13946541)
