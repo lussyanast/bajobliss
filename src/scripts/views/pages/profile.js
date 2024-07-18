@@ -1,5 +1,25 @@
+import { getUserId } from '../../utils/decode-token';
+import { getCookie, eraseCookie } from '../../utils/cookie-helper';
+import { userAPI } from '../../data/route.api';
+
 const Profile = {
   async render() {
+    let userData;
+
+    try {
+      const response = await userAPI.getUser(getUserId());
+      userData = response.data;
+    } catch (error) {
+      console.error('Error fetching user data: ', error);
+    }
+
+    const {
+      user_id: userId,
+      name,
+      email,
+      user_phone: phone,
+      profile_pic: profilePic,
+    } = userData;
     return `
       <div class="content">
         <div class="profile-content">
@@ -7,26 +27,30 @@ const Profile = {
             <h1>My Profile</h1>
             <div class="profile-details">
               <div class="profile-image">
-                <img src="" alt="Profile Image">
+                <img src=${profilePic} alt="${name}">
               </div>
               <div class="profile-info">
-                <h2>Lorem Ipsum</h2>
-                <p>Email: lorem@ipsum.com</p>
-                <p>Phone: +628123456789</p>
-                <p>Gender: Perempuan</p>
+                <h2>${name}</h2>
+                <p>User ID: ${userId}</p>
+                <p>Email: ${email}</p>
+                <p>Phone: ${phone}</p>
+                <p><s>Gender: Perempuan</s></p>
+                <br />
                 <div class="address">
-                  <h3>Alamat</h3>
-                  <p>Jl. Coklat IX xx, rw xx</p>
-                  <p>Kode Pos</p>
-                  <p>Kota Jakarta</p>
-                  <p>Provinsi Jawa Barat</p>
-                  <p>Indonesia</p>
+                  <s>
+                    <h3>Alamat</h3>
+                    <p>Jl. Coklat IX xx, rw xx</p>
+                    <p>Kode Pos</p>
+                    <p>Kota Jakarta</p>
+                    <p>Provinsi Jawa Barat</p>
+                    <p>Indonesia</p>
+                  </s>
                 </div>
                 <button class="edit-profile-btn">Edit Profile</button>
               </div>
             </div>
           </div>
-          <a class="logout" href="#home">Log Out</a>
+          <button class="logout" id="logout">Log Out</a>
         </div>
       </div>
     `;
@@ -112,6 +136,20 @@ const Profile = {
       editProfileBtn.addEventListener('click', async (event) => {
         event.preventDefault();
         await displayEditProfile();
+      });
+    }
+
+    const logoutBtn = document.querySelector('.logout');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+
+        eraseCookie('jwt');
+
+        const jwt = getCookie('jwt');
+        if (!jwt) {
+          window.location.href = '#/login';
+        }
       });
     }
   },

@@ -14,13 +14,20 @@ const Category = {
       <section class="category-section">
         <h2 class="category-title">Category</h2>
         <div class="category-grid">
-          ${categories.map((category) => `
-            <div class="category-item">
+          <div class="category-item">
+            <div class="category-image">
+              <i class="fa fa-picture-o" aria-hidden="true"></i>
+              <img src="https://via.placeholder.com/150" alt="Category Image">
+            </div>
+            <p class="category-text">All Categories</p>
+          </div>
+          ${categories.map(({ category_id: categoryId, icon, name }) => `
+            <div class="category-item" id="${categoryId}">
               <div class="category-image">
                 <i class="fa fa-picture-o" aria-hidden="true"></i>
-                <img src="${category.icon || ''}" alt="${category.name}">
+                <img src="${icon || ''}" alt="${name}">
               </div>
-              <p class="category-text">${category.name}</p>
+              <p class="category-text">${name}</p>
             </div>
           `).join('')}
         </div>
@@ -31,8 +38,9 @@ const Category = {
   async afterRender() {
     const categoryItems = document.querySelectorAll('.category-item');
     categoryItems.forEach((item) => {
-      item.addEventListener('click', () => {
-        window.location.href = '#/products';
+      item.addEventListener('click', (event) => {
+        const categoryId = event.currentTarget.id || 'all';
+        window.location.href = `#/products/${categoryId}`;
       });
     });
   },

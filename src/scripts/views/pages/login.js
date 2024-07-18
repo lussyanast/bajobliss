@@ -1,3 +1,5 @@
+/* eslint-disable camelcase */
+import { setCookie } from '../../utils/cookie-helper';
 import { authAPI } from '../../data/route.api';
 
 const Login = {
@@ -31,27 +33,30 @@ const Login = {
 
   async afterRender() {
     const loginForm = document.getElementById('loginForm');
-    
     loginForm.addEventListener('submit', async (event) => {
       event.preventDefault();
 
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
-
       try {
-        const response = await authAPI.login({ username, password });
-        
+        const identifier = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        const response = await authAPI.login({ identifier, password });
         if (response.status === 200) {
-          // Simpan status login di localStorage
-          localStorage.setItem('isLoggedIn', 'true');
-          // Redirect ke halaman profil
+          const { expire_in, token } = response.data;
+          const expiryDate = new Date(expire_in * 1000);
+
+          setCookie('jwt', token, expiryDate);
           window.location.href = '#/profile';
-        } else {
-          alert('Login failed. Please check your credentials and try again.');
         }
       } catch (error) {
-        console.error('Error logging in:', error);
-        alert('An error occurred. Please try again.');
+        if (error.response) {
+          const { data } = error.response;
+          alert(data.message);
+
+          return;
+        }
+        console.error('Error logging in: ', error);
+        alert('Internal server error');
       }
     });
   },

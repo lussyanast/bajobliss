@@ -16,7 +16,6 @@ const Search = {
             <button class="filter-button">Filter</button>
           </div>
           <div class="product-grid" id="productGrid">
-            <!-- Products will be injected here -->
           </div>
         </div>
       </div>
@@ -36,14 +35,10 @@ const Search = {
 
   async searchProducts(query) {
     try {
-      const response = await productAPI.getProducts(); // Panggil API untuk mendapatkan produk
-      const products = response.data; // Asumsikan data produk ada di response.data
-      // Filter produk berdasarkan query
-      const filteredProducts = products.filter(product =>
-        product.name.toLowerCase().includes(query.toLowerCase()) ||
-        product.description.toLowerCase().includes(query.toLowerCase())
-      );
-      return filteredProducts;
+      const response = await productAPI.searchProducts(query);
+      const products = response.data;
+
+      return products;
     } catch (error) {
       console.error('There was a problem with the fetch operation:', error);
       return [];
@@ -53,7 +48,7 @@ const Search = {
   displayResults(results) {
     const productGrid = document.getElementById('productGrid');
     const productCount = document.getElementById('productCount');
-    
+
     productCount.innerText = results.length;
 
     if (results.length === 0) {
@@ -64,7 +59,7 @@ const Search = {
     productGrid.innerHTML = results.map((product) => `
       <div class="product-item">
         <div class="product-image">
-          <img src="${product.pictures && product.pictures.length > 0 ? product.pictures[0].picture : 'default.jpg'}" alt="${product.name}">
+          <img src="${product?.pictures?.length > 0 ? product.pictures[0].picture : 'default.jpg'}" alt="${product.name}">
         </div>
         <div class="product-info">
           <h3 class="product-text">${product.name}</h3>
