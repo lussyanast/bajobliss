@@ -51,7 +51,7 @@ const Cart = {
         return `
           <div class="product-item" data-id=${productId}>
             <div class="product-image">
-              <i class="fa fa-picture-o" aria-hidden="true"></i>
+              <img src="${pictures[0].picture}">
             </div>
             <div class="product-info">
               <p class="product-text">${name}</p>
