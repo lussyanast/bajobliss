@@ -57,7 +57,7 @@ const Search = {
     }
 
     productGrid.innerHTML = results.map((product) => `
-      <div class="product-item">
+      <div class="product-item" data-id="${product.product_id}">
         <div class="product-image">
           <img src="${product?.pictures?.length > 0 ? product.pictures[0].picture : 'default.jpg'}" alt="${product.name}">
         </div>
@@ -75,6 +75,15 @@ const Search = {
         </div>
       </div>
     `).join('');
+
+    // Add event listener to each product item
+    const productItems = document.querySelectorAll('.product-item');
+    productItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const productId = item.getAttribute('data-id');
+        window.location.href = `#/product-detail/${productId}`;
+      });
+    });
   },
 
   formatRupiah(value) {
