@@ -48,13 +48,15 @@ const createFeedback = async (request, h) => {
 
     const { user_id, message } = request.payload;
 
-    if (decodedToken.role === 'user' && decodedToken.user_id !== user_id) {
+    if (user_id && decodedToken.role === 'user' && decodedToken.user_id !== user_id) {
       return Boom.unauthorized('You are not authorized to access this resource');
     }
 
-    const user = await db.User.findByPk(user_id);
-    if (!user) {
-      return Boom.notFound('User not found');
+    if (user_id) {
+      const user = await db.User.findByPk(user_id);
+      if (!user) {
+        return Boom.notFound('User not found');
+      }
     }
 
     const newFeedback = await db.Feedback.create({

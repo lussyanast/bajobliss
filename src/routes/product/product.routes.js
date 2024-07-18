@@ -58,7 +58,7 @@ module.exports = [
           category_id: Joi.string(),
           picture: Joi.array().items(
             Joi.object({
-              product_picture_id: Joi.number().optional(),
+              product_picture_id: Joi.string().optional(),
               picture: Joi.string().uri().required()
             })
           ),

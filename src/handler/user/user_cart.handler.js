@@ -81,7 +81,6 @@ const createUserCart = async (request, h) => {
       where: { 
         user_id: user_id ? user_id : decodedToken.user_id,
         product_id,
-        quantity
       }
     });
     if (existingUserCart) {
