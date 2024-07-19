@@ -29,7 +29,7 @@ BajoBliss merupakan sebuah aplikasi berbasis website yang mendukung UMKM di Labu
 - Mindmap : https://www.figma.com/board/vkC7fqiNNUnvHiHsTnN76L/BajoBliss-Mindmap-dan-Database-Design?node-id=0-1&t=X8l0YsV4h0oW28pH-0
 - Mock Up Desain Figma : https://www.figma.com/design/f7bJAFp7k10N4XaB0Xioyx/BajoBliss-Prototype?t=sg97VgmkvQDPrz6X-0
 - Presentasi : https://www.canva.com/design/DAGLQVLv6yc/nnQZAx8f2lxUAjIH1Pw6fQ/edit?utm_content=DAGLQVLv6yc&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
-- Demo Aplikasi :
+- Demo Aplikasi : https://youtu.be/9rWBjU3dvK8
 
 # Tech Stacks
 - HTML 
